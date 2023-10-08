@@ -1,0 +1,19 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div class="mb-3">
+    <label for="formFileSm" class="form-label">Select a file</label>
+    <input class="form-control form-control-sm" id="zipFileSelector" type="file">
+</div>
+
+<div class="mb-3 hidden" id="zipFileContents">
+    <h2 id="zipFileName"></h2>    
+</div>
