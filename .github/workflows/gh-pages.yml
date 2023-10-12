@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: website
-          path: MarcWils.Zippy/website/**
+          path: website/**
           if-no-files-found: error
 
   # Deployment job
