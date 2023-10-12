@@ -39,16 +39,14 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '19'          
-      - name: Build
-        run: dotnet build --no-restore
       - name: Install NPM dependencies
         run: npm ci
       - name: Run npm build
         run: npm run build
       - name: Run NPM tests
         run: npm run test
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+      - name: Build
+        run: dotnet build --no-restore
       - name: Publish
         run: dotnet publish MarcWils.Zippy.csproj -c Release -o website
       - name: Upload a Build Artifact
