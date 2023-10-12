@@ -35,6 +35,16 @@ jobs:
           dotnet-version: 7.0.x
       - name: Restore dependencies
         run: dotnet restore
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '19'          
+      - name: Install NPM dependencies
+        run: npm ci
+      - name: Run npm build
+        run: npm run build
+      # - name: Run NPM tests
+      #   run: npm run test
       - name: Build
         run: dotnet build --no-restore
       - name: Test
@@ -47,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: website
-          path: MarcWils.Zippy/website/**
+          path: website/**
           if-no-files-found: error
 
   # Deployment job
