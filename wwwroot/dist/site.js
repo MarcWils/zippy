@@ -1,2 +1,96 @@
-(()=>{"use strict";var e={236:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.ZipFile=void 0,t.ZipFile=class{constructor(e){this.file=e,this.fileName=e.name}validate(){this.file.slice(0,4).arrayBuffer().then((e=>this.onSignatureRead(e)))}onSignatureRead(e){console.log(this.toHexString(new Uint8Array(e)))}toHexString(e){return[...e].map((e=>e.toString(16).padStart(2,"0"))).join("")}}}},t={};function i(n){var r=t[n];if(void 0!==r)return r.exports;var o=t[n]={exports:{}};return e[n](o,o.exports,i),o.exports}(()=>{const e=i(236),t=document.getElementById("zipFileSelector"),n=document.getElementById("zipFileContents");t&&t.addEventListener("change",(()=>{!function(t){if(n.classList.remove("hidden"),1!==t.length)return;const i=new e.ZipFile(t[0]);document.getElementById("zipFileName").innerText=i.fileName,i.validate()}(t.files)}))})()})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./scripts/zipFile.ts":
+/*!****************************!*\
+  !*** ./scripts/zipFile.ts ***!
+  \****************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ZipFile = void 0;
+class ZipFile {
+    constructor(file) {
+        this.file = file;
+        this.fileName = file.name;
+    }
+    validate() {
+        const signature = this.file.slice(0, 4);
+        signature.arrayBuffer()
+            .then((buffer) => this.onSignatureRead(buffer));
+    }
+    onSignatureRead(signature) {
+        console.log(this.toHexString(new Uint8Array(signature)));
+    }
+    toHexString(byteArray) {
+        return [...byteArray]
+            .map(x => x.toString(16).padStart(2, '0'))
+            .join('');
+    }
+}
+exports.ZipFile = ZipFile;
+
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+var exports = __webpack_exports__;
+/*!************************!*\
+  !*** ./scripts/app.ts ***!
+  \************************/
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const zipFile_1 = __webpack_require__(/*! ./zipFile */ "./scripts/zipFile.ts");
+const zipFileSelector = document.getElementById('zipFileSelector');
+const zipFileContents = document.getElementById('zipFileContents');
+if (zipFileSelector) {
+    zipFileSelector.addEventListener('change', () => {
+        onZipFileSelected(zipFileSelector.files);
+    });
+}
+function onZipFileSelected(files) {
+    zipFileContents.classList.remove('hidden');
+    if (files.length !== 1) {
+        return;
+    }
+    const zipFile = new zipFile_1.ZipFile(files[0]);
+    document.getElementById('zipFileName').innerText = zipFile.fileName;
+    zipFile.validate();
+}
+
+})();
+
+/******/ })()
+;
 //# sourceMappingURL=site.js.map

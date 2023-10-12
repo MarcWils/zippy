@@ -47,6 +47,10 @@ jobs:
       #   run: npm run test
       - name: Build
         run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
       - name: Publish
         run: dotnet publish MarcWils.Zippy.csproj -c Release -o website
       - name: Upload a Build Artifact
