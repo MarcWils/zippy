@@ -47,8 +47,8 @@ jobs:
         run: npm ci
       - name: Run npm build
         run: npm run build
-      # - name: Run NPM tests
-      #   run: npm run test
+      - name: Run NPM tests
+        run: npm run test
       - name: Build
         run: dotnet build --no-restore
       - name: Publish

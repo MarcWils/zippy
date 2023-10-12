@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
 		<JavaScriptTestRoot>tests\</JavaScriptTestRoot>
-		<JavaScriptTestFramework>Mocha</JavaScriptTestFramework>
+		<JavaScriptTestFramework>Jest</JavaScriptTestFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
