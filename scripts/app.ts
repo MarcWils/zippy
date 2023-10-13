@@ -19,7 +19,7 @@ function onZipFileSelected(files: FileList) {
     document.getElementById('zipFileName').innerText = zipFile.fileName;
     zipFile.validate()
         .then(result => {
-            const outcome = result == DetectionResult.validZipArchive ? "Valid ZIP archive" : "Not a ZIP achive";
+            const outcome = result == DetectionResult.validZipArchive ? "Valid ZIP archive" : "Not a ZIP archive";
             document.getElementById('zipDetectionResult').innerText = outcome;
         });
 }
