@@ -6,32 +6,15 @@
 		<JavaScriptTestFramework>Jest</JavaScriptTestFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <TypeScriptTarget>ES6</TypeScriptTarget>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="wwwroot\js\**" />
-    <Content Remove="wwwroot\js\**" />
-    <EmbeddedResource Remove="wwwroot\js\**" />
-    <None Remove="wwwroot\js\**" />
-    <TypeScriptCompile Remove="wwwroot\js\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="scripts\app.js" />
-    <Content Include="scripts\app.js.map" />
-    <Content Include="scripts\zipFile.js" />
-    <Content Include="scripts\zipFile.js.map" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.2.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\index.html" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const detectionResult_1 = require("./entities/detectionResult");
 const zipFile_1 = require("./zipFile");
 const zipFileSelector = document.getElementById('zipFileSelector');
 const zipFileContents = document.getElementById('zipFileContents');
@@ -15,6 +16,10 @@ function onZipFileSelected(files) {
     }
     const zipFile = new zipFile_1.ZipFile(files[0]);
     document.getElementById('zipFileName').innerText = zipFile.fileName;
-    zipFile.validate();
+    zipFile.validate()
+        .then(result => {
+        const outcome = result == detectionResult_1.DetectionResult.validZipArchive ? "Valid ZIP archive" : "Not a ZIP achive";
+        document.getElementById('zipDetectionResult').innerText = outcome;
+    });
 }
 //# sourceMappingURL=app.js.map

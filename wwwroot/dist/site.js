@@ -2,15 +2,34 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./scripts/zipFile.ts":
-/*!****************************!*\
-  !*** ./scripts/zipFile.ts ***!
-  \****************************/
+/***/ "./scripts/entities/detectionResult.ts":
+/*!*********************************************!*\
+  !*** ./scripts/entities/detectionResult.ts ***!
+  \*********************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DetectionResult = void 0;
+var DetectionResult;
+(function (DetectionResult) {
+    DetectionResult[DetectionResult["validZipArchive"] = 0] = "validZipArchive";
+    DetectionResult[DetectionResult["noZipArchive"] = 1] = "noZipArchive";
+})(DetectionResult || (exports.DetectionResult = DetectionResult = {}));
+
+
+/***/ }),
+
+/***/ "./scripts/zipFile.ts":
+/*!****************************!*\
+  !*** ./scripts/zipFile.ts ***!
+  \****************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ZipFile = void 0;
+const detectionResult_1 = __webpack_require__(/*! ./entities/detectionResult */ "./scripts/entities/detectionResult.ts");
 class ZipFile {
     constructor(file) {
         this.file = file;
@@ -18,19 +37,26 @@ class ZipFile {
     }
     validate() {
         const signature = this.file.slice(0, 4);
-        signature.arrayBuffer()
-            .then((buffer) => this.onSignatureRead(buffer));
+        return signature.arrayBuffer()
+            .then((buffer) => this.validateSignature(buffer));
     }
-    onSignatureRead(signature) {
-        console.log(this.toHexString(new Uint8Array(signature)));
+    validateSignature(signature) {
+        if (this.signaturesMatch(ZipFile.zipSignature, new Uint8Array(signature))) {
+            return detectionResult_1.DetectionResult.validZipArchive;
+        }
+        else {
+            return detectionResult_1.DetectionResult.noZipArchive;
+        }
     }
-    toHexString(byteArray) {
-        return [...byteArray]
-            .map(x => x.toString(16).padStart(2, '0'))
-            .join('');
+    signaturesMatch(a, b) {
+        if (a.byteLength != b.byteLength) {
+            return false;
+        }
+        return a.every((val, i) => val == b[i]);
     }
 }
 exports.ZipFile = ZipFile;
+ZipFile.zipSignature = Uint8Array.from([80, 75, 3, 4]);
 
 
 /***/ })
@@ -71,6 +97,7 @@ var exports = __webpack_exports__;
   \************************/
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const detectionResult_1 = __webpack_require__(/*! ./entities/detectionResult */ "./scripts/entities/detectionResult.ts");
 const zipFile_1 = __webpack_require__(/*! ./zipFile */ "./scripts/zipFile.ts");
 const zipFileSelector = document.getElementById('zipFileSelector');
 const zipFileContents = document.getElementById('zipFileContents');
@@ -86,7 +113,11 @@ function onZipFileSelected(files) {
     }
     const zipFile = new zipFile_1.ZipFile(files[0]);
     document.getElementById('zipFileName').innerText = zipFile.fileName;
-    zipFile.validate();
+    zipFile.validate()
+        .then(result => {
+        const outcome = result == detectionResult_1.DetectionResult.validZipArchive ? "Valid ZIP archive" : "Not a ZIP achive";
+        document.getElementById('zipDetectionResult').innerText = outcome;
+    });
 }
 
 })();

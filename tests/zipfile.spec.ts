@@ -1,10 +1,18 @@
-﻿import { ZipFile } from "../scripts/zipFile";
+﻿import fs from 'fs';
+import { ZipFile } from "../scripts/zipFile";
 
-var assert = require('assert');
+const assert = require('assert');
 describe("ZipFile tests", () => {
-    it("Test 1", function () {
-        var file = new File([""], "naam");
-        const zip = new ZipFile(file);
-        assert.ok("naam", zip.fileName);
+    it("Text file is not a ZIP", function () {
+        fs.readFile('bestandje.txt', (_, data) => {
+            const parts = [
+                new Blob(['you construct a file...'], { type: 'text/plain' }),
+                ' Same way as you do with blob',
+                new Uint16Array(data)
+            ];
+            const file = new File(parts, "naam");
+            const zip = new ZipFile(file);
+            assert.equal(zip.fileName, "naam");
+        });
     })
 });

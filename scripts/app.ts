@@ -1,3 +1,4 @@
+import { DetectionResult } from "./entities/detectionResult";
 import { ZipFile } from "./zipFile";
 
 const zipFileSelector = <HTMLInputElement>document.getElementById('zipFileSelector');
@@ -16,5 +17,9 @@ function onZipFileSelected(files: FileList) {
     const zipFile = new ZipFile(files[0]);
 
     document.getElementById('zipFileName').innerText = zipFile.fileName;
-    zipFile.validate();
+    zipFile.validate()
+        .then(result => {
+            const outcome = result == DetectionResult.validZipArchive ? "Valid ZIP archive" : "Not a ZIP achive";
+            document.getElementById('zipDetectionResult').innerText = outcome;
+        });
 }

@@ -18,6 +18,7 @@
   },
   "scripts": {
     "build": "webpack --mode production",
+    "build-dev": "webpack --mode development",
     "test": "jest"
   }
 }
