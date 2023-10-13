@@ -18,7 +18,7 @@ export class ZipFile {
             .then((buffer) => this.validateSignature(buffer));
     }
 
-    validateSignature(signature: ArrayBuffer): DetectionResult {
+    private validateSignature(signature: ArrayBuffer): DetectionResult {
         if (this.signaturesMatch(ZipFile.zipSignature, new Uint8Array(signature))) {
             return DetectionResult.validZipArchive;
         } else {
