@@ -1,5 +1,4 @@
-import { DetectionResult } from "./entities/detectionResult";
-import { ZipFile } from "./zipFile";
+import { ZipAnalyzer } from "./zipAnalyzer";
 
 const zipFileSelector = <HTMLInputElement>document.getElementById('zipFileSelector');
 const zipFileContents = document.getElementById('zipFileContents');
@@ -14,12 +13,12 @@ function onZipFileSelected(files: FileList) {
     zipFileContents.classList.remove('hidden');
 
     if (files.length !== 1) { return; }
-    const zipFile = new ZipFile(files[0]);
+    const zipFile = new ZipAnalyzer(files[0]);
 
     document.getElementById('zipFileName').innerText = zipFile.fileName;
     zipFile.validate()
         .then(result => {
-            const outcome = result == DetectionResult.validZipArchive ? "Valid ZIP archive" : "Not a ZIP archive";
+            const outcome = result.isValidZip ? "Valid ZIP archive" : "Not a ZIP archive";
             document.getElementById('zipDetectionResult').innerText = outcome;
         });
 }

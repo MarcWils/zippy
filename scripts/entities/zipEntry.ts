@@ -1,0 +1,3 @@
+﻿class ZipEntry {
+    LocalFileHeader: LocalFileHeader;
+}

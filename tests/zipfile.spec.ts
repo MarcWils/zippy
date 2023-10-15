@@ -1,6 +1,5 @@
 ﻿import fs from 'fs';
-import { ZipFile } from "../scripts/zipFile";
-import { DetectionResult } from '../scripts/entities/detectionResult';
+import { ZipAnalyzer } from "../scripts/zipAnalyzer";
 
 describe("ZipFile tests", () => {
     it("Text file should no be recognized as a ZIP-archive", async () => {
@@ -8,9 +7,9 @@ describe("ZipFile tests", () => {
 
         const parts = [new Uint8Array(data)];
         const file = new File(parts, "TextFile.txt");
-        const zip = new ZipFile(file);
+        const zip = new ZipAnalyzer(file);
         zip.validate()
-            .then(result => expect(result).toBe(DetectionResult.noZipArchive));
+            .then(result => expect(result.isValidZip).toBeFalsy());
     });
 
     it("ZIP-archive should be recognized as a ZIP-archive", async () => {
@@ -18,8 +17,8 @@ describe("ZipFile tests", () => {
 
         const parts = [new Uint8Array(data)];
         const file = new File(parts, "Sample.zip");
-        const zip = new ZipFile(file);
+        const zip = new ZipAnalyzer(file);
         zip.validate()
-            .then(result => expect(result).toBe(DetectionResult.validZipArchive));
+            .then(result => expect(result.isValidZip).toBeTruthy());
     });
 });

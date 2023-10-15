@@ -13,24 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
-const zipFile_1 = require("../scripts/zipFile");
-const detectionResult_1 = require("../scripts/entities/detectionResult");
+const zipAnalyzer_1 = require("../scripts/zipAnalyzer");
 describe("ZipFile tests", () => {
     it("Text file should no be recognized as a ZIP-archive", () => __awaiter(void 0, void 0, void 0, function* () {
         const data = yield fs_1.default.promises.readFile('tests/files/TextFile.txt');
         const parts = [new Uint8Array(data)];
         const file = new File(parts, "TextFile.txt");
-        const zip = new zipFile_1.ZipFile(file);
+        const zip = new zipAnalyzer_1.ZipAnalyzer(file);
         zip.validate()
-            .then(result => expect(result).toBe(detectionResult_1.DetectionResult.noZipArchive));
+            .then(result => expect(result.isValidZip).toBeFalsy());
     }));
     it("ZIP-archive should be recognized as a ZIP-archive", () => __awaiter(void 0, void 0, void 0, function* () {
         const data = yield fs_1.default.promises.readFile('tests/files/Sample.zip');
         const parts = [new Uint8Array(data)];
         const file = new File(parts, "Sample.zip");
-        const zip = new zipFile_1.ZipFile(file);
+        const zip = new zipAnalyzer_1.ZipAnalyzer(file);
         zip.validate()
-            .then(result => expect(result).toBe(detectionResult_1.DetectionResult.validZipArchive));
+            .then(result => expect(result.isValidZip).toBeTruthy());
     }));
 });
 //# sourceMappingURL=zipfile.spec.js.map
