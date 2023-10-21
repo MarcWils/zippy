@@ -10,6 +10,9 @@
 *.userosscache
 *.sln.docstates
 
+# Visual Studio code
+.vscode/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -400,3 +403,4 @@ FodyWeavers.xsd
 
 # stats
 stats.json
+
