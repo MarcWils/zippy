@@ -1,0 +1,32 @@
+﻿@page "/"
+@using MarcWils.Zippy.ZipAnalysis;
+@using Microsoft.AspNetCore.Components.Forms;
+
+<h1>Zippy, an online ZIP-archive vizualizer</h1>
+
+<InputFile OnChange="@LoadFiles" />
+
+<p>
+    <span>@fileName</span>
+    <span>@isZipResult</span>
+</p>
+
+@code {
+    private string? @fileName;
+    private string? @isZipResult;
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        // TODO: Add check for file size
+
+        fileName = e.File.Name;
+        var zipInspector = new ZipInspector();
+        if (await zipInspector.HasZipSignatureAsync(e.File.OpenReadStream()))
+        {
+            isZipResult = " is a ZIP-archive";
+        }
+        else {
+            isZipResult = " is not a ZIP-archive";
+        }
+    }
+}
