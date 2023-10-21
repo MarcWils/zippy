@@ -8,7 +8,7 @@ namespace MarcWils.Zippy.ZipAnalysis.Tests
         [TestMethod]
         public async Task Given_A_Valid_ZipArchive_HasZipSignatureAsync_Should_Return_True()
         {
-            using var fs = File.OpenRead(@"TestFiles\ValidZip.zip");
+            using var fs = File.OpenRead(@"TestFiles/ValidZip.zip");
             var sut = new ZipInspector();
             Assert.IsTrue(await sut.HasZipSignatureAsync(fs));
         }
