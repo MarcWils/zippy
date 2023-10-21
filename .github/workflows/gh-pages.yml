@@ -38,13 +38,13 @@ jobs:
         with:
           dotnet-version: 7.0.x
       - name: Restore dependencies
-        run: dotnet restore src\MarcWils.Zippy.sln
+        run: dotnet restore src/MarcWils.Zippy.sln
       - name: Build
-        run: dotnet build src\MarcWils.Zippy.sln --no-restore
+        run: dotnet build src/MarcWils.Zippy.sln --no-restore
       - name: Build
-        run: dotnet test src\MarcWils.Zippy.ZipAnalysis.Tests\MarcWils.Zippy.ZipAnalysis.Tests.csproj
+        run: dotnet test src/MarcWils.Zippy.ZipAnalysis.Tests/MarcWils.Zippy.ZipAnalysis.Tests.csproj
       - name: Publish
-        run: dotnet publish src\MarcWils.Zippy.Site\MarcWils.Zippy.Site.csproj -c Release -o website
+        run: dotnet publish src/MarcWils.Zippy.Site/MarcWils.Zippy.Site.csproj -c Release -o website
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v2
         with:
