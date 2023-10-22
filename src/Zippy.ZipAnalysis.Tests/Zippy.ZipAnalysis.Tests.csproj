@@ -13,10 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MarcWils.Zippy.ZipAnalysis\MarcWils.Zippy.ZipAnalysis.csproj" />
+    <ProjectReference Include="..\Zippy.ZipAnalysis\Zippy.ZipAnalysis.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestFiles\EmptyZip.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\ValidZip.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

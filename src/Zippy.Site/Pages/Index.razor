@@ -1,15 +1,25 @@
 ﻿@page "/"
-@using MarcWils.Zippy.ZipAnalysis;
+@using Zippy.ZipAnalysis;
 @using Microsoft.AspNetCore.Components.Forms;
 
-<h1>Zippy, an online ZIP-archive vizualizer</h1>
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>TODO</p>
+</div>
 
-<InputFile OnChange="@LoadFiles" />
-
-<p>
-    <span>@fileName</span>
-    <span>@isZipResult</span>
-</p>
+<div class="container">
+    <div class="row">
+        <div class="col"><InputFile OnChange="@LoadFiles" /></div>
+    </div>
+    <div class="row">
+        <div class="col-5">
+            <p>
+                <span>@fileName</span>
+                <span>@isZipResult</span>
+            </p>
+        </div>
+    </div>
+</div>
 
 @code {
     private string? @fileName;
@@ -25,7 +35,8 @@
         {
             isZipResult = " is a ZIP-archive";
         }
-        else {
+        else
+        {
             isZipResult = " is not a ZIP-archive";
         }
     }
