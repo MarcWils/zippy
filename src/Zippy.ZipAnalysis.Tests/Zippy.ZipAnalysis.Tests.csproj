@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\+Zippy.ZipAnalysis\Zippy.ZipAnalysis.csproj" />
+    <ProjectReference Include="..\Zippy.ZipAnalysis\Zippy.ZipAnalysis.csproj" />
   </ItemGroup>
 
   <ItemGroup>
