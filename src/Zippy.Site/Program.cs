@@ -1,4 +1,4 @@
-using MarcWils.Zippy.Site;
+using Zippy.Site;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

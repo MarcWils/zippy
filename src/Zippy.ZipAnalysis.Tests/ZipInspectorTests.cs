@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace MarcWils.Zippy.ZipAnalysis.Tests
+namespace Zippy.ZipAnalysis.Tests
 {
     [TestClass]
     public class ZipInspectorTests
@@ -9,6 +9,14 @@ namespace MarcWils.Zippy.ZipAnalysis.Tests
         public async Task Given_A_Valid_ZipArchive_HasZipSignatureAsync_Should_Return_True()
         {
             using var fs = File.OpenRead(@"TestFiles/ValidZip.zip");
+            var sut = new ZipInspector();
+            Assert.IsTrue(await sut.HasZipSignatureAsync(fs));
+        }
+
+        [TestMethod]
+        public async Task Given_An_Empty_ZipArchive_HasZipSignatureAsync_Should_Return_True()
+        {
+            using var fs = File.OpenRead(@"TestFiles/EmptyZip.zip");
             var sut = new ZipInspector();
             Assert.IsTrue(await sut.HasZipSignatureAsync(fs));
         }

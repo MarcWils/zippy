@@ -1,1 +1,1 @@
-# zipfilevisualizer
+# Zippy, an online ZIP-archive visualizer [![Build Status](https://github.com/marcwils/zippy/actions/workflows/gh-pages.yml/badge.svg?branch=main)](https://github.com/marcwils/zippy/actions/workflows/gh-pages.yml)
