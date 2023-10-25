@@ -1,10 +1,11 @@
 ﻿@page "/"
+@using System.Text;
+@using System.IO;
 @using Zippy.ZipAnalysis;
 @using Microsoft.AspNetCore.Components.Forms;
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>TODO</p>
+    <h1 class="display-4">Welcome to zippy</h1>
 </div>
 
 <div class="container">
@@ -15,29 +16,32 @@
         <div class="col-5">
             <p>
                 <span>@fileName</span>
-                <span>@isZipResult</span>
             </p>
+
+            @((MarkupString)(zipHeaders ?? ""))
         </div>
     </div>
 </div>
 
 @code {
     private string? @fileName;
-    private string? @isZipResult;
+    private string? @zipHeaders;
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
         // TODO: Add check for file size
 
         fileName = e.File.Name;
-        var zipInspector = new ZipInspector();
-        if (await zipInspector.HasZipSignatureAsync(e.File.OpenReadStream()))
+        using var stream = new MemoryStream();
+        await e.File.OpenReadStream().CopyToAsync(stream); // oops, we're loading the whole file into memory, not ideal.
+        var headers = ZipInspector.GetZipHeaders(stream);
+
+        var sb = new StringBuilder();
+        foreach (var header in headers)
         {
-            isZipResult = " is a ZIP-archive";
+            sb.Append($"<p><h3>{header.GetType().Name}</h3>");
+            sb.Append($"{header.ToString().ReplaceLineEndings("<br />")}</p>");
         }
-        else
-        {
-            isZipResult = " is not a ZIP-archive";
-        }
+        zipHeaders = sb.ToString();
     }
 }

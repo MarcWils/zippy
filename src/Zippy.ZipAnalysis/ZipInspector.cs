@@ -1,16 +1,24 @@
-﻿using Zippy.ZipAnalysis.ZipFormat;
+﻿
+using Zippy.ZipAnalysis.ZipFormat;
 
 namespace Zippy.ZipAnalysis
 {
     public class ZipInspector
     {
-        public async Task<bool> HasZipSignatureAsync(Stream stream)
+        public static IEnumerable<ZipHeaderBase> GetZipHeaders(Stream stream)
         {
-            var buffer = new byte[4];
-            var bytesRead = await stream.ReadAsync(buffer, 0, 4);
-            return bytesRead == buffer.Length &&
-                (buffer.SequenceEqual(LocalFileHeader.Signature) ||
-                buffer.SequenceEqual(EndOfCentralDirectoryHeader.Signature));
+            var endOfCentralDirectoryHeader = EndOfCentralDirectoryHeader.GetEndOfCentralDirectoryHeader(stream);
+
+            if (endOfCentralDirectoryHeader != null)
+            {
+                var centralDirectoryHeaders = CentralDirectoryHeader.GetCentralDirectoryHeaders(stream, endOfCentralDirectoryHeader);
+                var localFileHeaders = LocalFileHeader.GetLocalFileHeaders(stream, centralDirectoryHeaders);
+                return localFileHeaders.Cast<ZipHeaderBase>().Concat(centralDirectoryHeaders).Concat(new ZipHeaderBase[] { endOfCentralDirectoryHeader });
+            }
+            
+
+            return Array.Empty<ZipHeaderBase>();
+            
         }
     }
 }
