@@ -3,9 +3,10 @@ using Zippy.ZipAnalysis.ZipFormat;
 
 namespace Zippy.ZipAnalysis
 {
-    public class ZipInspector
+    public static class ZipInspector
     {
-
+        public static readonly long MaxSupportedSize = 25 * 1024 * 1024;
+        
         public static async IAsyncEnumerable<ZipHeaderBase> GetZipHeadersAsync(Stream source)
         {
             uint possibleHeader = 0;

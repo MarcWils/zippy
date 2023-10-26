@@ -51,7 +51,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
             }
         }
 
-        public byte[] ZipFileCommentBytes { get; set; }
+        public byte[]? ZipFileCommentBytes { get; set; }
 
         public override ulong Length { get { return (ulong)(MinimumLength + ZipFileCommentLength); } }
 
@@ -123,7 +123,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
         /// Er wordt achteraan begonnen met zoeken
         /// Er wordt maximaal gezocht naar de maximale lengte van de end of central directory header
         /// Stream moet seekable zijn, en de lengte moet op te vragen zijn
-        public static EndOfCentralDirectoryHeader GetEndOfCentralDirectoryHeader(Stream source)
+        public static EndOfCentralDirectoryHeader? GetEndOfCentralDirectoryHeader(Stream source)
         {
             var startPos = Math.Max(0, source.Length - MinimumLength);
             var endPos = Math.Max(0, source.Length - MaximumLength);

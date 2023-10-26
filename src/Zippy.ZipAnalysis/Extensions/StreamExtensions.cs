@@ -1,7 +1,4 @@
-﻿using System.Formats.Asn1;
-using System.IO;
-
-namespace Zippy.ZipAnalysis.Extensions
+﻿namespace Zippy.ZipAnalysis.Extensions
 {
     public static class StreamExtensions
     {

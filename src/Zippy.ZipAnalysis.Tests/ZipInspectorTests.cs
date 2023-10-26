@@ -1,3 +1,4 @@
+using System.Reflection.PortableExecutable;
 using System.Text;
 using Zippy.ZipAnalysis.ZipFormat;
 
@@ -15,6 +16,16 @@ namespace Zippy.ZipAnalysis.Tests
             Assert.IsTrue(headers[0] is LocalFileHeader);
             Assert.IsTrue(headers[1] is CentralDirectoryHeader);
             Assert.IsTrue(headers[2] is EndOfCentralDirectoryHeader);
+        }
+
+
+        [TestMethod]
+        public async Task Given_A_Empty_ZipArchive_GetZipHeadersAsync_Should_Return_Header()
+        {
+            using var fs = File.OpenRead(@"TestFiles/EmptyZip.zip");
+            var headers = await ZipInspector.GetZipHeadersAsync(fs).ToArrayAsync();
+            Assert.AreEqual(1, headers.Length);
+            Assert.IsTrue(headers[0] is EndOfCentralDirectoryHeader);
         }
 
         [TestMethod]

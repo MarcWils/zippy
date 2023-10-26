@@ -1,20 +1,15 @@
-﻿using System;
-
-namespace Zippy.ZipAnalysis.Extensions
+﻿namespace Zippy.ZipAnalysis.Extensions
 {
     public static class NumericExtensions
     {
-
         public static DateTime ToDate(this ushort dosDate)
         {
             var day = (dosDate & 0b0000000000011111);
             var month = (dosDate & 0b0000000111100000) >> 5;
             var year = ((dosDate & 0b1111111000000000) >> 9) + 1980;
 
-            return new DateTime(year, month, day);
+            return new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Unspecified);
         }
-
-
 
         public static TimeSpan ToTime(this ushort dosTime)
         {
@@ -24,6 +19,5 @@ namespace Zippy.ZipAnalysis.Extensions
 
             return new TimeSpan(hour, minute, second);
         }
-
     }
 }
