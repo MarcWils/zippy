@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -16,11 +17,6 @@ namespace Zippy.ZipAnalysis.ZipFormat
             public ulong FileCreationTime { get; set; }
         }
 
-
-        public NTFSExtraField(Stream source)
-        {
-            LoadFromStream(source);
-        }
 
         public NTFSExtraField()
         {
@@ -41,48 +37,48 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public long PositionFirstByte { get; set; }
 
-        public bool LoadFromStream(Stream source) => LoadFromStream(source, false);
-        public bool LoadFromStream(Stream source, bool includeTag)
+        
+        public override async Task<bool> LoadFromStreamAsync(Stream source, bool includeTag)
         {
             try
             {
-                using (var reader = new BinaryReader(source, Encoding.UTF8, true))
+                var reader = new BinaryReader(source);
+                
+                if (includeTag)
                 {
-                    if (includeTag)
+                    var tag = await reader.ReadUInt16Async();
+                    if (tag != Tag)
                     {
-                        var tag = reader.ReadUInt16();
-                        if (tag != Tag)
-                        {
-                            throw new ArgumentException("Wrong tag for NTFS");
-                        }
+                        throw new ArgumentException("Wrong tag for NTFS");
                     }
-                    PositionFirstByte = source.Position - 2;
-                    ExtraBlockSize = reader.ReadUInt16();
-                    Reserved = reader.ReadUInt32();
-
-                    var ntfsAttributes = new List<NTFSAttribute>();
-                    int _bytesToRead = ExtraBlockSize - 4; // 4 bytes al gelezen bij uitlezen ExtraBlockSize
-                    while (_bytesToRead > 4)
-                    {
-                        var tag = reader.ReadUInt16();
-                        var size = reader.ReadUInt16();
-                        if (tag == 1 && size == 24) // het enige dat beschreven staat in de appnote..
-                        {
-                            ntfsAttributes.Add(new NTFSAttribute
-                            {
-                                Tag = tag,
-                                Size = size,
-                                FileLastModificationTime = reader.ReadUInt64(),
-                                FileLastAccessTime = reader.ReadUInt64(),
-                                FileCreationTime = reader.ReadUInt64()
-                            });
-                        }
-                        _bytesToRead -= 28;
-                    }
-
-                    NTFSAttributes = ntfsAttributes;
-                    return true;
                 }
+                PositionFirstByte = source.Position - 2;
+                ExtraBlockSize = await reader.ReadUInt16Async();
+                Reserved = await reader.ReadUInt32Async();
+
+                var ntfsAttributes = new List<NTFSAttribute>();
+                int _bytesToRead = ExtraBlockSize - 4; // 4 bytes al gelezen bij uitlezen ExtraBlockSize
+                while (_bytesToRead > 4)
+                {
+                    var tag = await reader.ReadUInt16Async();
+                    var size = await reader.ReadUInt16Async();
+                    if (tag == 1 && size == 24) // het enige dat beschreven staat in de appnote..
+                    {
+                        ntfsAttributes.Add(new NTFSAttribute
+                        {
+                            Tag = tag,
+                            Size = size,
+                            FileLastModificationTime = await reader.ReadUInt64Async(),
+                            FileLastAccessTime = await reader.ReadUInt64Async(),
+                            FileCreationTime = await reader.ReadUInt64Async(),
+                        });
+                    }
+                    _bytesToRead -= 28;
+                }
+
+                NTFSAttributes = ntfsAttributes;
+                return true;
+                
             }
             catch (EndOfStreamException)
             {

@@ -8,6 +8,10 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public abstract ushort Length { get; }
 
+
+        public async Task<bool> LoadFromStreamAsync(Stream source) => await LoadFromStreamAsync(source, false);
+        public abstract Task<bool> LoadFromStreamAsync(Stream source, bool includeTag);
+
         public void WriteToStream(Stream stream)
         {
             var buffer = ToByteArray();

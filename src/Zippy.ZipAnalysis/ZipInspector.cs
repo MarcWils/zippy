@@ -6,6 +6,9 @@ namespace Zippy.ZipAnalysis
     public static class ZipInspector
     {
         public static readonly long MaxSupportedSize = 25 * 1024 * 1024;
+
+        private static readonly uint _commonHeaderMask = 0xFFFF;
+        private static readonly uint _commonHeader = 0x4b50;
         
         public static async IAsyncEnumerable<ZipHeaderBase> GetZipHeadersAsync(Stream source)
         {
@@ -17,13 +20,15 @@ namespace Zippy.ZipAnalysis
                 possibleHeader >>= 8;
                 possibleHeader |= (uint)(lastByte << 24);
 
-                if ((possibleHeader & 0x000000FF) == 0x00000050)
+                if ((possibleHeader & _commonHeaderMask) == _commonHeader)
                 {
                     var header = possibleHeader switch
                     {
-                        LocalFileHeader.Signature => (ZipHeaderBase)new LocalFileHeader(source),
-                        CentralDirectoryHeader.Signature => new CentralDirectoryHeader(source),
-                        EndOfCentralDirectoryHeader.Signature => new EndOfCentralDirectoryHeader(source),
+                        LocalFileHeader.Signature => (ZipHeaderBase)(await CreateFromStreamAsync<LocalFileHeader>(source)),
+                        CentralDirectoryHeader.Signature => await CreateFromStreamAsync<CentralDirectoryHeader>(source),
+                        EndOfCentralDirectoryHeader.Signature => await CreateFromStreamAsync<EndOfCentralDirectoryHeader>(source),
+                        Zip64EndOfCentralDirectoryLocatorHeader.Signature => await CreateFromStreamAsync<Zip64EndOfCentralDirectoryLocatorHeader>(source),
+                        Zip64EndOfCentralDirectoryRecordHeader.Signature => await CreateFromStreamAsync<Zip64EndOfCentralDirectoryRecordHeader>(source),
                         _ => null
                     };
 
@@ -34,6 +39,14 @@ namespace Zippy.ZipAnalysis
                 }
 
             }
+        }
+
+
+        public static async Task<T> CreateFromStreamAsync<T>(Stream stream) where T : ZipHeaderBase, new()
+        {
+            var zipHeader = new T();
+            await zipHeader.LoadFromStreamAsync(stream);
+            return zipHeader;
         }
     }
 }

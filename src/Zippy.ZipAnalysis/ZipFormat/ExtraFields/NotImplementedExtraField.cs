@@ -1,16 +1,11 @@
-﻿using System.Text;
+﻿using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
+
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
 
     public class NotImplementedExtraField : ExtraFieldBase
     {
-
-        public NotImplementedExtraField(ushort tag, Stream source)
-        {
-            Tag = tag;
-            LoadFromStream(source);
-        }
 
         public ushort Tag { get; set; }
 
@@ -35,27 +30,25 @@ namespace Zippy.ZipAnalysis.ZipFormat
             return result;
         }
 
-        public bool LoadFromStream(Stream source) => LoadFromStream(source, false);
-
         /// <summary>
         /// Leest tot het einde van het blok
         /// </summary>
-        public bool LoadFromStream(Stream source, bool includeTag)
+        public override async Task<bool> LoadFromStreamAsync(Stream source, bool includeTag)
         {
             try
             {
-                using (var reader = new BinaryReader(source, Encoding.UTF8, true))
-                {
-                    if (includeTag)
-                    {
-                        Tag = reader.ReadUInt16();
-                    }
+                var reader = new BinaryReader(source);
 
-                    PositionFirstByte = source.Position - 2;
-                    ExtraBlockSize = reader.ReadUInt16();
-                    Data = reader.ReadBytes(ExtraBlockSize);
-                    return true;
+                if (includeTag)
+                {
+                    Tag = await reader.ReadUInt16Async();
                 }
+
+                PositionFirstByte = source.Position - 2;
+                ExtraBlockSize = await reader.ReadUInt16Async();
+                Data = await reader.ReadBytesAsync(ExtraBlockSize);
+                return true;
+
             }
             catch (EndOfStreamException)
             {

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -38,35 +39,34 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public long CentralDirectoryOffset { get => (long)OffsetOfCentralDirectory; }
 
-        public override bool LoadFromStream(Stream source, bool includeSignature = false)
+        public override async Task<bool> LoadFromStreamAsync(Stream source, bool includeSignature)
         {
             try
             {
-                using (var reader = new BinaryReader(source, Encoding.UTF8, true))
-                {
-                    if (includeSignature)
-                    {
-                        var signature = reader.ReadUInt32();
-                        if (signature != Signature)
-                        {
-                            throw new ArgumentException("Wrong signature");
-                        }
-                    }
+                var reader = new BinaryReader(source);
 
-                    PositionFirstByte = source.Position - 4;
-                    SizeOfZip64EndOfCentralDirectoryRecord = reader.ReadUInt64();
-                    VersionMadeBy = reader.ReadUInt16();
-                    VersionNeededToExtract = reader.ReadUInt16();
-                    NumberOfThisDisk = reader.ReadUInt32();
-                    NumberOfDiskWithStartOfCentralDirectory = reader.ReadUInt32();
-                    NumberOfEntriesInCentralDirectoryOnThisDisk = reader.ReadUInt64();
-                    TotalNumberOfEntriesInCentralDirectories = reader.ReadUInt64();
-                    SizeOfCentralDirectory = reader.ReadUInt64();
-                    OffsetOfCentralDirectory = reader.ReadUInt64();
-                    var zip64ExtensibleDataSectorLength = (int)SizeOfZip64EndOfCentralDirectoryRecord - 44; // beperkte lengte (int ipv ulong)
-                    Zip64ExtensibleDataSector = reader.ReadBytes(zip64ExtensibleDataSectorLength); 
-                    return Zip64ExtensibleDataSector.Length == zip64ExtensibleDataSectorLength;
+                if (includeSignature)
+                {
+                    var signature = await reader.ReadUInt32Async();
+                    if (signature != Signature)
+                    {
+                        throw new ArgumentException("Wrong signature");
+                    }
                 }
+
+                PositionFirstByte = source.Position - 4;
+                SizeOfZip64EndOfCentralDirectoryRecord = await reader.ReadUInt64Async();
+                VersionMadeBy = await reader.ReadUInt16Async();
+                VersionNeededToExtract = await reader.ReadUInt16Async();
+                NumberOfThisDisk = await reader.ReadUInt32Async();
+                NumberOfDiskWithStartOfCentralDirectory = await reader.ReadUInt32Async();
+                NumberOfEntriesInCentralDirectoryOnThisDisk = await reader.ReadUInt64Async();
+                TotalNumberOfEntriesInCentralDirectories = await reader.ReadUInt64Async();
+                SizeOfCentralDirectory = await reader.ReadUInt64Async();
+                OffsetOfCentralDirectory = await reader.ReadUInt64Async();
+                var zip64ExtensibleDataSectorLength = (int)SizeOfZip64EndOfCentralDirectoryRecord - 44; // beperkte lengte (int ipv ulong)
+                Zip64ExtensibleDataSector = await reader.ReadBytesAsync(zip64ExtensibleDataSectorLength);
+                return Zip64ExtensibleDataSector.Length == zip64ExtensibleDataSectorLength;
             }
             catch (EndOfStreamException)
             {

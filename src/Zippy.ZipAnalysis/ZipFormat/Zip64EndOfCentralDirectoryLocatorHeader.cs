@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Zippy.ZipAnalysis.Extensions;
+using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -21,27 +22,25 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public override long PositionFirstByte { get; set; }
 
-        public override bool LoadFromStream(Stream source, bool includeSignature = false)
+        public override async Task<bool> LoadFromStreamAsync(Stream source, bool includeSignature)
         {
             try
             {
-                using (var reader = new BinaryReader(source, Encoding.UTF8, true))
+                var reader = new BinaryReader(source);
+                if (includeSignature)
                 {
-                    if (includeSignature)
+                    var signature = await reader.ReadUInt32Async();
+                    if (signature != Signature)
                     {
-                        var signature = reader.ReadUInt32();
-                        if (signature != Signature)
-                        {
-                            throw new ArgumentException("Wrong signature");
-                        }
+                        throw new ArgumentException("Wrong signature");
                     }
-
-                    PositionFirstByte = source.Position - 4;
-                    NumberOfDiskWithStartOfZip64EndOfCentralDirectory = reader.ReadUInt32();
-                    OffsetOfZip64EndOfCentralDirectory = reader.ReadUInt64();
-                    TotalNumberOfDisks = reader.ReadUInt32();
-                    return true;
                 }
+
+                PositionFirstByte = source.Position - 4;
+                NumberOfDiskWithStartOfZip64EndOfCentralDirectory = await reader.ReadUInt32Async();
+                OffsetOfZip64EndOfCentralDirectory = await reader.ReadUInt64Async();
+                TotalNumberOfDisks = await reader.ReadUInt32Async();
+                return true;
             }
             catch (EndOfStreamException)
             {
@@ -65,7 +64,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
         }
 
 
-        public static Zip64EndOfCentralDirectoryLocatorHeader GetZip64EndOfCentralDirectoryLocatorHeader(Stream source, EndOfCentralDirectoryHeader endOfCentralDirectoryHeader)
+        public static async Task<Zip64EndOfCentralDirectoryLocatorHeader> GetZip64EndOfCentralDirectoryLocatorHeader(Stream source, EndOfCentralDirectoryHeader endOfCentralDirectoryHeader)
         {
             long startPos, endPos;
 
@@ -86,7 +85,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
                 if (source.ReadSignature() == Signature)
                 {
                     var zip64EndOfCentralDirectoryLocatorHeader = new Zip64EndOfCentralDirectoryLocatorHeader();
-                    if (zip64EndOfCentralDirectoryLocatorHeader.LoadFromStream(source))
+                    if (await zip64EndOfCentralDirectoryLocatorHeader.LoadFromStreamAsync(source))
                     {
                         return zip64EndOfCentralDirectoryLocatorHeader;
                     }

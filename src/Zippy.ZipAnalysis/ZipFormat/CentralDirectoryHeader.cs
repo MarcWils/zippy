@@ -1,20 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Zippy.ZipAnalysis.Extensions;
+using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
     public class CentralDirectoryHeader : ZipEntryHeaderBase
-    {
-        public CentralDirectoryHeader(Stream source)
-        {
-            LoadFromStream(source);
-        }
-
-        public CentralDirectoryHeader()
-        {
-        }
-
+    { 
         public const uint Signature = 0x02014b50;
 
 
@@ -55,56 +47,48 @@ namespace Zippy.ZipAnalysis.ZipFormat
             }
         }
 
-        protected byte[] FileCommentBytes { get; set; }
+        protected byte[] FileCommentBytes { get; set; } = Array.Empty<byte>();
 
         public override long PositionFirstByte { get; set; }
 
-
-
-
-
-
-
-
-
-        public override bool LoadFromStream(Stream source, bool includeSignature = false)
+        public override async Task<bool> LoadFromStreamAsync(Stream source, bool includeSignature)
         {
             try
             {
-                using (var reader = new BinaryReader(source, Encoding.UTF8, true))
+                var reader = new BinaryReader(source);
+
+                if (includeSignature)
                 {
-                    if (includeSignature)
+                    var signature = await reader.ReadUInt32Async();
+                    if (signature != Signature)
                     {
-                        var signature = reader.ReadUInt32();
-                        if (signature != Signature)
-                        {
-                            throw new ArgumentException("Wrong signature");
-                        }
+                        throw new ArgumentException("Wrong signature");
                     }
-
-                    PositionFirstByte = source.Position - 4;
-                    VersionMadeBy = reader.ReadUInt16();
-                    VersionNeededToExtract = reader.ReadUInt16();
-                    GeneralPurposeBitFlag = reader.ReadUInt16();
-                    CompressionMethod = reader.ReadUInt16();
-                    LastModificationFileTime = reader.ReadUInt16();
-                    LastModificationFileDate = reader.ReadUInt16();
-                    Crc32 = reader.ReadUInt32();
-                    CompressedSize = reader.ReadUInt32();
-                    UncompressedSize = reader.ReadUInt32();
-                    var fileNameLength = reader.ReadUInt16();
-                    var extraFieldLength = reader.ReadUInt16();
-                    var fileCommentLength = reader.ReadUInt16();
-                    DiskNumberStart = reader.ReadUInt16();
-                    InternalFileAttributes = reader.ReadUInt16();
-                    ExternalFileAttributes = reader.ReadUInt32();
-                    RelativeOffsetOfLocalHeader = reader.ReadUInt32();
-
-                    FileNameBytes = reader.ReadBytes(fileNameLength);
-                    ExtraFields = ReadExtraFields(reader, extraFieldLength);
-                    FileCommentBytes = reader.ReadBytes(fileCommentLength);
-                    return FileNameBytes.Length == fileNameLength && FileCommentBytes.Length == fileCommentLength;
                 }
+
+                PositionFirstByte = source.Position - 4;
+                VersionMadeBy = await reader.ReadUInt16Async();
+                VersionNeededToExtract = await reader.ReadUInt16Async();
+                GeneralPurposeBitFlag = await reader.ReadUInt16Async();
+                CompressionMethod = await reader.ReadUInt16Async();
+                LastModificationFileTime = await reader.ReadUInt16Async();
+                LastModificationFileDate = await reader.ReadUInt16Async();
+                Crc32 = await reader.ReadUInt32Async();
+                CompressedSize = await reader.ReadUInt32Async();
+                UncompressedSize = await reader.ReadUInt32Async();
+                var fileNameLength = await reader.ReadUInt16Async();
+                var extraFieldLength = await reader.ReadUInt16Async();
+                var fileCommentLength = await reader.ReadUInt16Async();
+                DiskNumberStart = await reader.ReadUInt16Async();
+                InternalFileAttributes = await reader.ReadUInt16Async();
+                ExternalFileAttributes = await reader.ReadUInt32Async();
+                RelativeOffsetOfLocalHeader = await reader.ReadUInt32Async();
+
+                FileNameBytes = await reader.ReadBytesAsync(fileNameLength);
+                ExtraFields = await ReadExtraFieldsAsync(source, extraFieldLength);
+                FileCommentBytes = await reader.ReadBytesAsync(fileCommentLength);
+                return FileNameBytes.Length == fileNameLength && FileCommentBytes.Length == fileCommentLength;
+
             }
             catch (EndOfStreamException)
             {
@@ -152,24 +136,6 @@ namespace Zippy.ZipAnalysis.ZipFormat
                 }
             }
             return result;
-        }
-
-
-        public static IEnumerable<CentralDirectoryHeader> GetCentralDirectoryHeaders(Stream source, IEndOfCentralDirectoryHeader endOfCentralDirectoryHeader)
-        {
-            List<CentralDirectoryHeader> centralDirectoryHeaders = new List<CentralDirectoryHeader>();
-
-            source.Seek(endOfCentralDirectoryHeader.CentralDirectoryOffset, SeekOrigin.Begin);
-            while (source.ReadSignature() == Signature)
-            {
-                var centralDirectoryHeader = new CentralDirectoryHeader();
-                if (centralDirectoryHeader.LoadFromStream(source))
-                {
-                    centralDirectoryHeaders.Add(centralDirectoryHeader);
-                }
-            }
-
-            return centralDirectoryHeaders;
         }
 
 

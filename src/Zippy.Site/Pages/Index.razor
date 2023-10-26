@@ -45,10 +45,7 @@
         }
         else
         {
-            using var stream = new MemoryStream();
-            await e.File.OpenReadStream(ZipInspector.MaxSupportedSize).CopyToAsync(stream); // oops, we're loading the whole file into memory, not ideal.
-            stream.Position = 0;
-            headers = await ZipInspector.GetZipHeadersAsync(stream).ToListAsync();
+            headers = await ZipInspector.GetZipHeadersAsync(e.File.OpenReadStream(ZipInspector.MaxSupportedSize)).ToListAsync();
             errorMessage = !headers.Any() ? "Please select a valid ZIP-file" : null;
         }
     }
