@@ -42,7 +42,7 @@ namespace Zippy.ZipAnalysis
         }
 
 
-        public static async Task<T> CreateFromStreamAsync<T>(Stream stream) where T : ZipHeaderBase, new()
+        private static async Task<T> CreateFromStreamAsync<T>(Stream stream) where T : ZipHeaderBase, new()
         {
             var zipHeader = new T();
             await zipHeader.LoadFromStreamAsync(stream);

@@ -13,8 +13,6 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public override ulong Length { get { return (ulong)MinimumLength + FileNameLength + ExtraFieldLength; } }
 
-        public override long PositionFirstByte { get; set; }
-
         public override ulong OffsetLocalFileHeader => (ulong)PositionFirstByte;
 
         public override async Task<bool> LoadFromStreamAsync(Stream source, bool includeSignature)
@@ -88,7 +86,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine($"Header: Local file header");
             builder.AppendLine($"Position first byte: {PositionFirstByte}");
             builder.AppendLine($"Signature: {Signature:x}");
@@ -104,7 +102,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
             builder.AppendLine($"FileNameLength: {FileNameLength}");
             builder.AppendLine($"ExtraFieldLength: {ExtraFieldLength}");
             builder.AppendLine($"FileName: {FileName}");
-            builder.AppendLine($"{String.Concat(ExtraFields?.Select(e => e.ToString()) ?? new string[0])}");
+            builder.AppendLine($"{string.Concat(ExtraFields?.Select(e => e.ToString()) ?? Array.Empty<string>())}");
             return builder.ToString();
         }
     }

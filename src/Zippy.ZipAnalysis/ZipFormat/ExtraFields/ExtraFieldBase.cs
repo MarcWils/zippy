@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Zippy.ZipAnalysis.ZipFormat
+﻿namespace Zippy.ZipAnalysis.ZipFormat.ExtraFields
 {
     public abstract class ExtraFieldBase
     {

@@ -1,11 +1,12 @@
 ﻿using System.Text;
+using Zippy.ZipAnalysis.ZipFormat.ExtraFields;
 using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
     public abstract class ZipHeaderBase
     {
-        protected Encoding DefaultEncoding => Encoding.GetEncoding("IBM437");
+        protected static Encoding DefaultEncoding => Encoding.GetEncoding("IBM437");
 
         static ZipHeaderBase()
         {
@@ -18,7 +19,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public abstract Task<bool> LoadFromStreamAsync(Stream source, bool includeSignature);
 
-        public abstract long PositionFirstByte { get; set; } // TODO: moet deze abstract zijn?
+        public long PositionFirstByte { get; set; }
 
         public async Task<bool> LoadFromStreamAsync(Stream source) => await LoadFromStreamAsync(source, false);
         
@@ -31,7 +32,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
         }
 
 
-        protected async Task<IEnumerable<ExtraFieldBase>> ReadExtraFieldsAsync(Stream source, int extraFieldLength)
+        protected static async Task<IEnumerable<ExtraFieldBase>> ReadExtraFieldsAsync(Stream source, int extraFieldLength)
         {
             var leftToRead = extraFieldLength;
             var extraFields = new List<ExtraFieldBase>();
@@ -44,8 +45,8 @@ namespace Zippy.ZipAnalysis.ZipFormat
                     case Zip64ExtraField.Tag:
                         extraFields.Add(await CreateFromStreamAsync<Zip64ExtraField>(source)); 
                         break;
-                    case NTFSExtraField.Tag: 
-                        extraFields.Add(await CreateFromStreamAsync<NTFSExtraField>(source));
+                    case NtfsExtraField.Tag: 
+                        extraFields.Add(await CreateFromStreamAsync<NtfsExtraField>(source));
                         break;
                     default:
                         var notImplementedExtraField = await CreateFromStreamAsync<NotImplementedExtraField>(source);
@@ -53,7 +54,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
                         extraFields.Add(notImplementedExtraField);
                         break;
                 }
-                leftToRead -= extraFields.Last().Length;
+                leftToRead -= extraFields[^1].Length;
             }
 
             var reallyRead = extraFields.Sum(e => e.Length);

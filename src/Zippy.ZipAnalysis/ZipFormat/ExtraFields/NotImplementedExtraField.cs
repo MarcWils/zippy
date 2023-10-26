@@ -1,7 +1,7 @@
 ﻿using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
 
 
-namespace Zippy.ZipAnalysis.ZipFormat
+namespace Zippy.ZipAnalysis.ZipFormat.ExtraFields
 {
 
     public class NotImplementedExtraField : ExtraFieldBase
@@ -13,7 +13,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public ushort ExtraBlockSize { get; set; }
 
-        public byte[] Data { get; set; }
+        public byte[] Data { get; set; } = Array.Empty<byte>();
 
         public long PositionFirstByte { get; set; }
 

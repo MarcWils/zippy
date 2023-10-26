@@ -43,9 +43,6 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public override ulong Length { get { return (MinimumLength + ZipFileCommentLength); } }
 
-        public override long PositionFirstByte { get; set; }
-
-
         public long CentralDirectoryOffset { get => OffsetOfCentralDirectory; }
 
         public override byte[] ToByteArray()
@@ -108,7 +105,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine($"Header: End of central directory header");
             builder.AppendLine($"Position first byte: {PositionFirstByte}");
             builder.AppendLine($"Signature: {Signature:x}");

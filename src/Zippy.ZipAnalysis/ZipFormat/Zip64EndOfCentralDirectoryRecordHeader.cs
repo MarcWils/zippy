@@ -28,13 +28,11 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public ulong OffsetOfCentralDirectory { get; set; }
 
-        public byte[] Zip64ExtensibleDataSector { get; set; }
+        public byte[] Zip64ExtensibleDataSector { get; set; } = Array.Empty<byte>();
 
         public ulong Zip64ExtensibleDataSectorLength { get { return (ulong)((Zip64ExtensibleDataSector != null) ? Zip64ExtensibleDataSector.LongLength : 0); } }
 
         public override ulong Length => MinimumLength + Zip64ExtensibleDataSectorLength;
-
-        public override long PositionFirstByte { get; set; }
 
 
         public long CentralDirectoryOffset { get => (long)OffsetOfCentralDirectory; }
@@ -105,7 +103,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine($"Header: Zip64 end of central directory record header");
             builder.AppendLine($"Position first byte: {PositionFirstByte}");
             builder.AppendLine($"Length: {Length}");

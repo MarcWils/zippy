@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Zippy.ZipAnalysis.ZipFormat.ExtraFields;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -43,9 +44,9 @@ namespace Zippy.ZipAnalysis.ZipFormat
             }
         }
 
-        public IEnumerable<ExtraFieldBase> ExtraFields { get; set; }
+        public IEnumerable<ExtraFieldBase> ExtraFields { get; set; } = Enumerable.Empty<ExtraFieldBase>();
 
-        protected byte[] FileNameBytes { get; set; }
+        protected byte[] FileNameBytes { get; set; } = Array.Empty<byte>();
 
 
         public Encoding Encoding
@@ -69,7 +70,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
         {
             get
             {
-                return FileNameLength > 0 && (FileName.EndsWith("/") || FileName.EndsWith("\\"));
+                return FileNameLength > 0 && (FileName.EndsWith('/') || FileName.EndsWith('\\'));
             }
         }
 

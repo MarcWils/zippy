@@ -49,8 +49,6 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         protected byte[] FileCommentBytes { get; set; } = Array.Empty<byte>();
 
-        public override long PositionFirstByte { get; set; }
-
         public override async Task<bool> LoadFromStreamAsync(Stream source, bool includeSignature)
         {
             try
@@ -142,7 +140,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine($"Header: Central directory header");
             builder.AppendLine($"Position first byte: {PositionFirstByte}");
             builder.AppendLine($"Signature: {Signature:x}");
@@ -165,7 +163,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
             builder.AppendLine($"RelativeOffsetOfLocalHeader: {RelativeOffsetOfLocalHeader}");
             builder.AppendLine($"FileName: {FileName}");
             builder.AppendLine($"FileComment: {FileComment}");
-            builder.AppendLine($"{String.Concat(ExtraFields?.Select(e => e.ToString()) ?? new string[0])}");
+            builder.AppendLine($"{string.Concat(ExtraFields?.Select(e => e.ToString()) ?? Array.Empty<string>())}");
 
             return builder.ToString();
 

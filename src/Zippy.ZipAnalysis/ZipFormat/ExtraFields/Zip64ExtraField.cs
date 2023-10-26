@@ -2,14 +2,10 @@
 using System.Text;
 using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
 
-namespace Zippy.ZipAnalysis.ZipFormat
+namespace Zippy.ZipAnalysis.ZipFormat.ExtraFields
 {
     public class Zip64ExtraField : ExtraFieldBase
     {
-        public Zip64ExtraField()
-        {
-        }
-
         public const ushort Tag = 1;
 
         public ushort ExtraBlockSize { get; set; }
@@ -22,7 +18,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
         public uint DiskStartNumber { get; set; }
 
 
-        public override ushort Length { get => ((ushort)(ExtraBlockSize + 4)); }
+        public override ushort Length { get => (ushort)(ExtraBlockSize + 4); }
 
         public long PositionFirstByte { get; set; }
 

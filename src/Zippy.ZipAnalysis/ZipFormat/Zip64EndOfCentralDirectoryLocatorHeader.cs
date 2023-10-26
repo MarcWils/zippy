@@ -1,13 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using Zippy.ZipAnalysis.Extensions;
 using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
     public class Zip64EndOfCentralDirectoryLocatorHeader : ZipHeaderBase
     {
-        private static long _length = 20;
+        private static readonly long _length = 20;
 
         public const uint Signature = 0x07064b50;
 
@@ -19,8 +18,6 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
 
         public override ulong Length => (ulong)_length;
-
-        public override long PositionFirstByte { get; set; }
 
         public override async Task<bool> LoadFromStreamAsync(Stream source, bool includeSignature)
         {
@@ -64,42 +61,13 @@ namespace Zippy.ZipAnalysis.ZipFormat
         }
 
 
-        public static async Task<Zip64EndOfCentralDirectoryLocatorHeader> GetZip64EndOfCentralDirectoryLocatorHeader(Stream source, EndOfCentralDirectoryHeader endOfCentralDirectoryHeader)
-        {
-            long startPos, endPos;
-
-            if (endOfCentralDirectoryHeader.PositionFirstByte - _length > 0) // endOfCentralDirectoryHeader was al uitgelezen en adh daarvan kan positie van dit record bepaald worden 
-            {
-                startPos = endOfCentralDirectoryHeader.PositionFirstByte - _length;
-                endPos = startPos;
-            }
-            else
-            {
-                startPos = Math.Max(0, source.Length - EndOfCentralDirectoryHeader.MinimumLength - _length);
-                endPos = Math.Max(0, source.Length - EndOfCentralDirectoryHeader.MaximumLength - _length);
-            }
-
-            for (long pos = startPos; pos >= endPos; pos--)
-            {
-                source.Position = pos;
-                if (source.ReadSignature() == Signature)
-                {
-                    var zip64EndOfCentralDirectoryLocatorHeader = new Zip64EndOfCentralDirectoryLocatorHeader();
-                    if (await zip64EndOfCentralDirectoryLocatorHeader.LoadFromStreamAsync(source))
-                    {
-                        return zip64EndOfCentralDirectoryLocatorHeader;
-                    }
-                }
-            }
-
-            return null;
-        }
+        
 
 
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine($"Header: Zip64 end of central directory locator header");
             builder.AppendLine($"Position first byte: {PositionFirstByte}");
             builder.AppendLine($"Length: {Length}");
