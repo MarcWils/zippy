@@ -15,7 +15,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
         {
         }
 
-        public static uint Signature { get => 0x02014b50; }
+        public const uint Signature = 0x02014b50;
 
 
         public ushort VersionMadeBy { get; set; }

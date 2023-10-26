@@ -7,7 +7,19 @@ namespace Zippy.ZipAnalysis.ZipFormat
     public class EndOfCentralDirectoryHeader : ZipHeaderBase, IEndOfCentralDirectoryHeader
     {
 
-        public static uint Signature { get => 0x06054b50; }
+        public EndOfCentralDirectoryHeader(Stream source)
+        {
+            LoadFromStream(source);
+        }
+
+        public EndOfCentralDirectoryHeader()
+        {
+
+        }
+
+
+
+        public const uint Signature = 0x06054b50;
         public static uint MinimumLength => 22;
         public static uint MaximumLength => 22 + 65535;
 

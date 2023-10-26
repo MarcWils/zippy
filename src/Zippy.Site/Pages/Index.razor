@@ -34,10 +34,9 @@
         fileName = e.File.Name;
         using var stream = new MemoryStream();
         await e.File.OpenReadStream().CopyToAsync(stream); // oops, we're loading the whole file into memory, not ideal.
-        var headers = ZipInspector.GetZipHeaders(stream);
-
+        stream.Position = 0;
         var sb = new StringBuilder();
-        foreach (var header in headers)
+        await foreach (var header in ZipInspector.GetZipHeadersAsync(stream))
         {
             sb.Append($"<p><h3>{header.GetType().Name}</h3>");
             sb.Append($"{header.ToString().ReplaceLineEndings("<br />")}</p>");

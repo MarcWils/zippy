@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Formats.Asn1;
+using System.IO;
 
 namespace Zippy.ZipAnalysis.Extensions
 {
@@ -12,6 +13,14 @@ namespace Zippy.ZipAnalysis.Extensions
             header |= ((uint)source.ReadByte() << 16);
             header |= ((uint)source.ReadByte() << 24);
             return header;
+        }
+
+
+        public static async Task<int> ReadByteAsync(this Stream source)
+        {
+            var buffer = new byte[1];
+            var nrOfBytesRead = await source.ReadAsync(buffer, 0, 1);
+            return nrOfBytesRead == 0 ? -1 : buffer[0];
         }
     }
 }

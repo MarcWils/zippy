@@ -8,7 +8,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
     {
         private static long _length = 20;
 
-        public static uint Signature { get => 0x07064b50; }
+        public const uint Signature = 0x07064b50;
 
         public uint NumberOfDiskWithStartOfZip64EndOfCentralDirectory { get; set; }
 

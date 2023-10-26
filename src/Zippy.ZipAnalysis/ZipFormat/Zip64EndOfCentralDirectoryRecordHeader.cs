@@ -5,7 +5,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
 {
     public class Zip64EndOfCentralDirectoryRecordHeader : ZipHeaderBase, IEndOfCentralDirectoryHeader
     {
-        public static uint Signature { get => 0x06064b50; }
+        public const uint Signature = 0x06064b50;
 
         public static uint MinimumLength => 56;
 

@@ -1,4 +1,6 @@
-﻿namespace Zippy.ZipAnalysis.ZipFormat
+﻿using System.Text;
+
+namespace Zippy.ZipAnalysis.ZipFormat
 {
     public class ZipFileHeaders
     {
@@ -23,7 +25,7 @@
 
 
         /// <summary>
-        /// Laadt een hele zipfile in.
+        /// Load a whole zip file, stream need to support seeking
         /// </summary>
         public void LoadFromStream(Stream source)
         {
@@ -48,6 +50,9 @@
                 LocalFileHeaders = LocalFileHeader.GetLocalFileHeaders(source, CentralDirectoryHeaders);
             }
         }
+
+
+       
 
     }
 }

@@ -16,7 +16,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         }
 
-        public static uint Signature { get => 0x04034b50; }
+        public const uint Signature = 0x04034b50;
 
         public static uint MinimumLength => 30;
 
