@@ -1,43 +1,55 @@
 ﻿@page "/"
+@using System.IO;
 @using Zippy.ZipAnalysis;
+@using Zippy.ZipAnalysis.Extensions;
+@using Zippy.ZipAnalysis.ZipFormat;
 @using Microsoft.AspNetCore.Components.Forms;
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>TODO</p>
+<div class="text-center pb-5">
+    <h1 class="display-4">Welcome to Zippy</h1>
 </div>
 
 <div class="container">
     <div class="row">
-        <div class="col"><InputFile OnChange="@LoadFiles" /></div>
-    </div>
-    <div class="row">
-        <div class="col-5">
-            <p>
-                <span>@fileName</span>
-                <span>@isZipResult</span>
-            </p>
+        <div class="col">
+            <InputFile OnChange="@LoadFiles" id="fileSelector" class="@((string.IsNullOrEmpty(errorMessage)? "form-control" : "form-control is-invalid"))" aria-describedby="fileSelectorFeedback" />
+            <div id="fileSelectorFeedback" class="invalid-feedback">
+                @errorMessage
+            </div>
         </div>
     </div>
+    @if (headers != null && headers.Any())
+    {
+        <div class="row pt-5 justify-content-md-center">
+            <div class="col">
+                <ZipFileComponent FileName="@fileName" Headers="headers" />
+            </div>
+        </div>
+    }
 </div>
 
-@code {
-    private string? @fileName;
-    private string? @isZipResult;
+
+@code
+{
+    private string? fileName;
+    private string? errorMessage;
+    private IEnumerable<ZipAnalysis.ZipFormat.ZipHeaderBase>? headers;
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
-        // TODO: Add check for file size
-
         fileName = e.File.Name;
-        var zipInspector = new ZipInspector();
-        if (await zipInspector.HasZipSignatureAsync(e.File.OpenReadStream()))
+
+        if (e.File.Size > ZipInspector.MaxSupportedSize)
         {
-            isZipResult = " is a ZIP-archive";
+            errorMessage = $"File is too big. Only files up to {ZipInspector.MaxSupportedSize.ToReadableFileSize()} are supported.";
         }
         else
         {
-            isZipResult = " is not a ZIP-archive";
+            using var stream = new MemoryStream();
+            await e.File.OpenReadStream(ZipInspector.MaxSupportedSize).CopyToAsync(stream); // oops, we're loading the whole file into memory, not ideal.
+            stream.Position = 0;
+            headers = await ZipInspector.GetZipHeadersAsync(stream).ToListAsync();
+            errorMessage = !headers.Any() ? "Please select a valid ZIP-file" : null;
         }
     }
 }

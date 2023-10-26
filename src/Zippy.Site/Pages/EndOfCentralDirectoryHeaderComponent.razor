@@ -1,0 +1,66 @@
+﻿@using Zippy.ZipAnalysis.ZipFormat;
+
+<div class="accordion-item">
+    <h2 class="accordion-header" id="@("header_" + _htmlId)">
+        <button class="accordion-button" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="@("#" + _htmlId)"
+                aria-expanded="false"
+                aria-controls="@_htmlId">
+            @if (EndOfCentralDirectoryHeader != null)
+            {
+                @:End of central directory record
+            }
+        </button>
+    </h2>
+    <div id="@_htmlId" class="accordion-collapse collapse" aria-labelledby="@("header_" + _htmlId)">
+        <div class="accordion-body">
+            @if (EndOfCentralDirectoryHeader != null)
+            {
+                <table class="table table-condensed table-striped table-hover table-bordered">
+                    <thead>
+                        <tr class="table-light">
+                            <th>Field</th>
+                            <th>Value</th>
+                            <th>Explanation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Signature</td>
+                            <td>@EndOfCentralDirectoryHeader.Signature</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Number of this disk</td>
+                            <td>@EndOfCentralDirectoryHeader.NumberOfThisDisk</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Disk where central directory starts</td>
+                            <td>@EndOfCentralDirectoryHeader.NumberOfDiskWithStartOfCentralDirectory</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Number of central directory records on this disk</td>
+                            <td>@EndOfCentralDirectoryHeader.NumberOfEntriesInCentralDirectoryOnThisDisk</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Total number of central directory records</td>
+                            <td>@EndOfCentralDirectoryHeader.TotalNumberOfEntriesInCentralDirectory</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private string _htmlId = $"cdh-{Guid.NewGuid()}";
+
+    [Parameter]
+    public EndOfCentralDirectoryHeader? EndOfCentralDirectoryHeader { get; set; }
+}
