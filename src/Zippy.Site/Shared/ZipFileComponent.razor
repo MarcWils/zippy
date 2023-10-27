@@ -30,6 +30,12 @@
                 case CentralDirectoryHeader cd:
                     <CentralDirectoryHeaderComponent CentralDirectoryHeader="cd" />
                     break;
+                case Zip64EndOfCentralDirectoryLocatorHeader zeocdl:
+                    <Zip64EndOfCentralDirectoryLocatorHeaderComponent Zip64EndOfCentralDirectoryLocatorHeader="zeocdl" />
+                    break;
+                case Zip64EndOfCentralDirectoryRecordHeader zeocdr:
+                    <Zip64EndOfCentralDirectoryRecordHeaderComponent Zip64EndOfCentralDirectoryRecordHeader="zeocdr" />
+                    break;
                 case EndOfCentralDirectoryHeader eocd:
                     <EndOfCentralDirectoryHeaderComponent EndOfCentralDirectoryHeader="eocd" />
                     break;
