@@ -1,0 +1,48 @@
+﻿@if (NtfsExtraField != null)
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">ZIP64 extra field</h5>
+
+            <table class="table table-condensed table-striped table-hover table-bordered">
+                <thead>
+                    <tr class="table-light">
+                        <th>Property</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Position first byte</td>
+                        <td>@NtfsExtraField.PositionFirstByte</td>
+                    </tr>
+                    <tr>
+                        <td>Length</td>
+                        <td>@NtfsExtraField.Length</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-condensed table-striped table-hover table-bordered">
+                <thead>
+                    <tr class="table-light">
+                        <th>Field</th>
+                        <th>Raw value</th>
+                        <th>Display value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="3">TODO</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public NtfsExtraField? NtfsExtraField { get; set; }
+}

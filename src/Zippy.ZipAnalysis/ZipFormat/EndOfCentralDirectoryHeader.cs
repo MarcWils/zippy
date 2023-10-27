@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Zippy.ZipAnalysis.Extensions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {

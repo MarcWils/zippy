@@ -38,12 +38,18 @@ html {
 body {
     margin-bottom: 60px;
 }
-
-.footer {
+header {
+    background-color: #f5f5f5;
+}
+footer {
     position: absolute;
     bottom: 0;
     width: 100%;
     height: 60px;
     line-height: 60px;
     background-color: #f5f5f5;
+}
+.alert span.alert-message::before {
+    padding-right: 5px;
+    content: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjB4IiB2aWV3Qm94PSIzIDAgMTIgMTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMS40NjcgMy43MjdjLjI4OS4xODkuMzcuNTc2LjE4MS44NjVsLTQuMjUgNi41YS42MjUuNjI1IDAgMDEtLjk0NC4xMmwtMi43NS0yLjVhLjYyNS42MjUgMCAwMS44NDEtLjkyNWwyLjIwOCAyLjAwNyAzLjg0OS01Ljg4NmEuNjI1LjYyNSAwIDAxLjg2NS0uMTgxeiIgZmlsbD0iIzAwMCIvPjwvc3ZnPg==);
 }
