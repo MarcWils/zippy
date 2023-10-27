@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
+using Zippy.ZipAnalysis.Extensions;
 
 namespace Zippy.ZipAnalysis.ZipFormat.ExtraFields
 {
@@ -26,35 +26,34 @@ namespace Zippy.ZipAnalysis.ZipFormat.ExtraFields
         {
             try
             {
-                var reader = new BinaryReader(source);
-                
+               
                 if (includeTag)
                 {
-                    var tag = await reader.ReadUInt16Async();
+                    var tag = await source.ReadUInt16Async();
                     if (tag != Tag)
                     {
                         throw new ArgumentException("Wrong tag for NTFS");
                     }
                 }
                 PositionFirstByte = source.Position - 2;
-                ExtraBlockSize = await reader.ReadUInt16Async();
-                Reserved = await reader.ReadUInt32Async();
+                ExtraBlockSize = await source.ReadUInt16Async();
+                Reserved = await source.ReadUInt32Async();
 
                 var ntfsAttributes = new List<NtfsAttribute>();
                 int _bytesToRead = ExtraBlockSize - 4; // 4 bytes al gelezen bij uitlezen ExtraBlockSize
                 while (_bytesToRead > 4)
                 {
-                    var tag = await reader.ReadUInt16Async();
-                    var size = await reader.ReadUInt16Async();
+                    var tag = await source.ReadUInt16Async();
+                    var size = await source.ReadUInt16Async();
                     if (tag == 1 && size == 24) // het enige dat beschreven staat in de appnote..
                     {
                         ntfsAttributes.Add(new NtfsAttribute
                         {
                             Tag = tag,
                             Size = size,
-                            FileLastModificationTime = await reader.ReadUInt64Async(),
-                            FileLastAccessTime = await reader.ReadUInt64Async(),
-                            FileCreationTime = await reader.ReadUInt64Async(),
+                            FileLastModificationTime = await source.ReadUInt64Async(),
+                            FileLastAccessTime = await source.ReadUInt64Async(),
+                            FileCreationTime = await source.ReadUInt64Async(),
                         });
                     }
                     _bytesToRead -= 28;

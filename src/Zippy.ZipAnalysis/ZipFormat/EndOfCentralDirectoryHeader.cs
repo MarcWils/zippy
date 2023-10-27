@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Zippy.ZipAnalysis.Extensions;
-using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -72,10 +71,9 @@ namespace Zippy.ZipAnalysis.ZipFormat
         {
             try
             {
-                var reader = new BinaryReader(source);
                 if (includeSignature)
                 {
-                    var signature = await reader.ReadUInt32Async();
+                    var signature = await source.ReadUInt32Async();
                     if (signature != Signature)
                     {
                         throw new ArgumentException("Wrong signature");
@@ -83,15 +81,15 @@ namespace Zippy.ZipAnalysis.ZipFormat
                 }
 
                 PositionFirstByte = source.Position - 4;
-                NumberOfThisDisk = await reader.ReadUInt16Async();
-                NumberOfDiskWithStartOfCentralDirectory = await reader.ReadUInt16Async();
-                NumberOfEntriesInCentralDirectoryOnThisDisk = await reader.ReadUInt16Async();
-                TotalNumberOfEntriesInCentralDirectory = await reader.ReadUInt16Async();
-                SizeOfCentralDirectory = await reader.ReadUInt32Async();
-                OffsetOfCentralDirectory = await reader.ReadUInt32Async();
-                var zipFileCommentLength = await reader.ReadUInt16Async();
+                NumberOfThisDisk = await source.ReadUInt16Async();
+                NumberOfDiskWithStartOfCentralDirectory = await source.ReadUInt16Async();
+                NumberOfEntriesInCentralDirectoryOnThisDisk = await source.ReadUInt16Async();
+                TotalNumberOfEntriesInCentralDirectory = await source.ReadUInt16Async();
+                SizeOfCentralDirectory = await source.ReadUInt32Async();
+                OffsetOfCentralDirectory = await source.ReadUInt32Async();
+                var zipFileCommentLength = await source.ReadUInt16Async();
 
-                ZipFileCommentBytes = await reader.ReadBytesAsync(zipFileCommentLength);
+                ZipFileCommentBytes = await source.ReadBytesAsync(zipFileCommentLength);
                 return ZipFileCommentBytes.Length == zipFileCommentLength;
             }
             catch (EndOfStreamException)

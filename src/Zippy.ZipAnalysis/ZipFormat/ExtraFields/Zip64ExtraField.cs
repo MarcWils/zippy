@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
+using Zippy.ZipAnalysis.Extensions;
 
 namespace Zippy.ZipAnalysis.ZipFormat.ExtraFields
 {
@@ -27,37 +27,35 @@ namespace Zippy.ZipAnalysis.ZipFormat.ExtraFields
         {
             try
             {
-                var reader = new BinaryReader(source);
-
                 if (includeTag)
                 {
-                    var tag = await reader.ReadUInt16Async();
+                    var tag = await source.ReadUInt16Async();
                     if (tag != Tag)
                     {
                         throw new ArgumentException("Wrong tag for Zip64");
                     }
                 }
                 PositionFirstByte = source.Position - 2;
-                ExtraBlockSize = await reader.ReadUInt16Async();
+                ExtraBlockSize = await source.ReadUInt16Async();
 
                 if (ExtraBlockSize >= 8)
                 {
-                    UncompressedSize = await reader.ReadUInt64Async();
+                    UncompressedSize = await source.ReadUInt64Async();
                 }
 
                 if (ExtraBlockSize >= 16)
                 {
-                    CompressedSize = await reader.ReadUInt64Async();
+                    CompressedSize = await source.ReadUInt64Async();
                 }
 
                 if (ExtraBlockSize >= 24)
                 {
-                    RelativeHeaderOffset = await reader.ReadUInt64Async();
+                    RelativeHeaderOffset = await source.ReadUInt64Async();
                 }
 
                 if (ExtraBlockSize == 28)
                 {
-                    DiskStartNumber = await reader.ReadUInt32Async();
+                    DiskStartNumber = await source.ReadUInt32Async();
                 }
 
                 return true;

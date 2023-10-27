@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Zippy.ZipAnalysis.Extensions;
-using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -19,29 +18,27 @@ namespace Zippy.ZipAnalysis.ZipFormat
         {
             try
             {
-                var reader = new BinaryReader(source);
-
                 if (includeSignature)
                 {
-                    var signature = await reader.ReadUInt32Async();
+                    var signature = await source.ReadUInt32Async();
                     if (signature != Signature)
                     {
                         throw new ArgumentException("Wrong signature");
                     }
                 }
                 PositionFirstByte = source.Position - 4;
-                VersionNeededToExtract = await reader.ReadUInt16Async();
-                GeneralPurposeBitFlag = await reader.ReadUInt16Async();
-                CompressionMethod = await reader.ReadUInt16Async();
-                LastModificationFileTime = await reader.ReadUInt16Async();
-                LastModificationFileDate = await reader.ReadUInt16Async();
-                Crc32 = await reader.ReadUInt32Async();
-                CompressedSize = await reader.ReadUInt32Async();
-                UncompressedSize = await reader.ReadUInt32Async();
-                var fileNameLength = await reader.ReadUInt16Async();
-                var extraFieldLength = await reader.ReadUInt16Async();
+                VersionNeededToExtract = await source.ReadUInt16Async();
+                GeneralPurposeBitFlag = await source.ReadUInt16Async();
+                CompressionMethod = await source.ReadUInt16Async();
+                LastModificationFileTime = await source.ReadUInt16Async();
+                LastModificationFileDate = await source.ReadUInt16Async();
+                Crc32 = await source.ReadUInt32Async();
+                CompressedSize = await source.ReadUInt32Async();
+                UncompressedSize = await source.ReadUInt32Async();
+                var fileNameLength = await source.ReadUInt16Async();
+                var extraFieldLength = await source.ReadUInt16Async();
 
-                FileNameBytes = await reader.ReadBytesAsync(fileNameLength);
+                FileNameBytes = await source.ReadBytesAsync(fileNameLength);
                 ExtraFields = await ReadExtraFieldsAsync(source, extraFieldLength);
 
                 return FileNameBytes.Length == fileNameLength;

@@ -1,5 +1,6 @@
-﻿using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
+﻿
 
+using Zippy.ZipAnalysis.Extensions;
 
 namespace Zippy.ZipAnalysis.ZipFormat.ExtraFields
 {
@@ -37,16 +38,14 @@ namespace Zippy.ZipAnalysis.ZipFormat.ExtraFields
         {
             try
             {
-                var reader = new BinaryReader(source);
-
                 if (includeTag)
                 {
-                    Tag = await reader.ReadUInt16Async();
+                    Tag = await source.ReadUInt16Async();
                 }
 
                 PositionFirstByte = source.Position - 2;
-                ExtraBlockSize = await reader.ReadUInt16Async();
-                Data = await reader.ReadBytesAsync(ExtraBlockSize);
+                ExtraBlockSize = await source.ReadUInt16Async();
+                Data = await source.ReadBytesAsync(ExtraBlockSize);
                 return true;
 
             }

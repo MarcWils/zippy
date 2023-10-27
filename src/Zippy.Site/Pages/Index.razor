@@ -27,7 +27,7 @@
                 <ZipFileComponent FileName="@fileName" Headers="headers" />
             </div>
         </div>
-        <span>@duration</span>
+        <span>File processed in @duration</span>
     }
 </div>
 
@@ -36,7 +36,7 @@
 {
     private string? fileName;
     private string? errorMessage;
-    private string? duration;
+    private TimeSpan? duration;
     private IEnumerable<ZipAnalysis.ZipFormat.ZipHeaderBase>? headers;
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
@@ -51,10 +51,11 @@
         {
             var sw = Stopwatch.StartNew();
             var fileStream = e.File.OpenReadStream(ZipInspector.MaxSupportedSize);
-             var bufferStream = new BufferedStream(new FakeSeekableStream(fileStream), 512 * 1024); // Need fake seekable stream as BufferedStream mistakenly needs underlying stream to be seekable to get Position. (https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/IO/BufferedStream.cs,197)
-            headers = await ZipInspector.GetZipHeadersAsync(bufferStream).ToListAsync();
+            var bufferStream = new BufferedStream(new FakeSeekableStream(fileStream), 512 * 1024); // Need fake seekable stream as BufferedStream mistakenly needs underlying stream to be seekable to get Position. (https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/IO/BufferedStream.cs,197)
+
+            headers = await new ZipInspector(bufferStream).GetZipHeadersAsync().ToListAsync();
             errorMessage = !headers.Any() ? "Please select a valid ZIP-file" : null;
-            duration = $"File processed in {sw.Elapsed:c}";
+            duration = sw.Elapsed;
         }
     }
 }

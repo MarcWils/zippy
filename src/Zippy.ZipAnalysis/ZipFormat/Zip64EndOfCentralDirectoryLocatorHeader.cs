@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
+using Zippy.ZipAnalysis.Extensions;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -23,10 +23,9 @@ namespace Zippy.ZipAnalysis.ZipFormat
         {
             try
             {
-                var reader = new BinaryReader(source);
                 if (includeSignature)
                 {
-                    var signature = await reader.ReadUInt32Async();
+                    var signature = await source.ReadUInt32Async();
                     if (signature != Signature)
                     {
                         throw new ArgumentException("Wrong signature");
@@ -34,9 +33,9 @@ namespace Zippy.ZipAnalysis.ZipFormat
                 }
 
                 PositionFirstByte = source.Position - 4;
-                NumberOfDiskWithStartOfZip64EndOfCentralDirectory = await reader.ReadUInt32Async();
-                OffsetOfZip64EndOfCentralDirectory = await reader.ReadUInt64Async();
-                TotalNumberOfDisks = await reader.ReadUInt32Async();
+                NumberOfDiskWithStartOfZip64EndOfCentralDirectory = await source.ReadUInt32Async();
+                OffsetOfZip64EndOfCentralDirectory = await source.ReadUInt64Async();
+                TotalNumberOfDisks = await source.ReadUInt32Async();
                 return true;
             }
             catch (EndOfStreamException)

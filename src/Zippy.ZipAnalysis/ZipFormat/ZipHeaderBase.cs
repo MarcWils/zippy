@@ -1,6 +1,6 @@
 ﻿using System.Text;
+using Zippy.ZipAnalysis.Extensions;
 using Zippy.ZipAnalysis.ZipFormat.ExtraFields;
-using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -36,10 +36,9 @@ namespace Zippy.ZipAnalysis.ZipFormat
         {
             var leftToRead = extraFieldLength;
             var extraFields = new List<ExtraFieldBase>();
-            var reader = new BinaryReader(source);
             while (leftToRead >= 2)
             {
-                var tag = await reader.ReadUInt16Async();
+                var tag = await source.ReadUInt16Async();
                 switch (tag)
                 {
                     case Zip64ExtraField.Tag:

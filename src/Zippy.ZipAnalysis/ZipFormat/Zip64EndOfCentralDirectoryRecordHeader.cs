@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using BinaryReader = Zippy.ZipAnalysis.IO.BinaryReader;
+using Zippy.ZipAnalysis.Extensions;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -41,11 +41,9 @@ namespace Zippy.ZipAnalysis.ZipFormat
         {
             try
             {
-                var reader = new BinaryReader(source);
-
                 if (includeSignature)
                 {
-                    var signature = await reader.ReadUInt32Async();
+                    var signature = await source.ReadUInt32Async();
                     if (signature != Signature)
                     {
                         throw new ArgumentException("Wrong signature");
@@ -53,17 +51,17 @@ namespace Zippy.ZipAnalysis.ZipFormat
                 }
 
                 PositionFirstByte = source.Position - 4;
-                SizeOfZip64EndOfCentralDirectoryRecord = await reader.ReadUInt64Async();
-                VersionMadeBy = await reader.ReadUInt16Async();
-                VersionNeededToExtract = await reader.ReadUInt16Async();
-                NumberOfThisDisk = await reader.ReadUInt32Async();
-                NumberOfDiskWithStartOfCentralDirectory = await reader.ReadUInt32Async();
-                NumberOfEntriesInCentralDirectoryOnThisDisk = await reader.ReadUInt64Async();
-                TotalNumberOfEntriesInCentralDirectories = await reader.ReadUInt64Async();
-                SizeOfCentralDirectory = await reader.ReadUInt64Async();
-                OffsetOfCentralDirectory = await reader.ReadUInt64Async();
+                SizeOfZip64EndOfCentralDirectoryRecord = await source.ReadUInt64Async();
+                VersionMadeBy = await source.ReadUInt16Async();
+                VersionNeededToExtract = await source.ReadUInt16Async();
+                NumberOfThisDisk = await source.ReadUInt32Async();
+                NumberOfDiskWithStartOfCentralDirectory = await source.ReadUInt32Async();
+                NumberOfEntriesInCentralDirectoryOnThisDisk = await source.ReadUInt64Async();
+                TotalNumberOfEntriesInCentralDirectories = await source.ReadUInt64Async();
+                SizeOfCentralDirectory = await source.ReadUInt64Async();
+                OffsetOfCentralDirectory = await source.ReadUInt64Async();
                 var zip64ExtensibleDataSectorLength = (int)SizeOfZip64EndOfCentralDirectoryRecord - 44; // beperkte lengte (int ipv ulong)
-                Zip64ExtensibleDataSector = await reader.ReadBytesAsync(zip64ExtensibleDataSectorLength);
+                Zip64ExtensibleDataSector = await source.ReadBytesAsync(zip64ExtensibleDataSectorLength);
                 return Zip64ExtensibleDataSector.Length == zip64ExtensibleDataSectorLength;
             }
             catch (EndOfStreamException)
