@@ -1,10 +1,12 @@
 ﻿using System.Text;
+using Zippy.ZipAnalysis.Extensions;
+using Zippy.ZipAnalysis.ZipFormat.ExtraFields;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
     public abstract class ZipHeaderBase
     {
-        protected Encoding DefaultEncoding => Encoding.GetEncoding("IBM437");
+        protected static Encoding DefaultEncoding => Encoding.GetEncoding("IBM437");
 
         static ZipHeaderBase()
         {
@@ -15,11 +17,13 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public abstract ulong Length { get; }
 
+        public abstract Task<bool> LoadFromStreamAsync(Stream source, bool includeSignature);
 
-        public abstract bool LoadFromStream(Stream source, bool includeSignature = false);
+        public long PositionFirstByte { get; set; }
 
-
-        public abstract long PositionFirstByte { get; set; }
+        public async Task<bool> LoadFromStreamAsync(Stream source) => await LoadFromStreamAsync(source, false);
+        
+        
 
         public void WriteToStream(Stream stream)
         {
@@ -28,32 +32,42 @@ namespace Zippy.ZipAnalysis.ZipFormat
         }
 
 
-        protected IEnumerable<ExtraFieldBase> ReadExtraFields(BinaryReader reader, int extraFieldLength)
+        protected static async Task<IEnumerable<ExtraFieldBase>> ReadExtraFieldsAsync(Stream source, int extraFieldLength)
         {
             var leftToRead = extraFieldLength;
             var extraFields = new List<ExtraFieldBase>();
             while (leftToRead >= 2)
             {
-                var tag = reader.ReadUInt16();
+                var tag = await source.ReadUInt16Async();
                 switch (tag)
                 {
                     case Zip64ExtraField.Tag:
-                        extraFields.Add(new Zip64ExtraField(reader.BaseStream)); 
+                        extraFields.Add(await CreateFromStreamAsync<Zip64ExtraField>(source)); 
                         break;
-                    case NTFSExtraField.Tag: 
-                        extraFields.Add(new NTFSExtraField(reader.BaseStream));
+                    case NtfsExtraField.Tag: 
+                        extraFields.Add(await CreateFromStreamAsync<NtfsExtraField>(source));
                         break;
                     default:
-                        extraFields.Add(new NotImplementedExtraField(tag, reader.BaseStream));
+                        var notImplementedExtraField = await CreateFromStreamAsync<NotImplementedExtraField>(source);
+                        notImplementedExtraField.Tag = tag;
+                        extraFields.Add(notImplementedExtraField);
                         break;
                 }
-                leftToRead -= extraFields.Last().Length;
+                leftToRead -= extraFields[^1].Length;
             }
 
             var reallyRead = extraFields.Sum(e => e.Length);
             return extraFieldLength != reallyRead
                 ? throw new EndOfStreamException($"Extra fields incorrectly read. Expected {extraFieldLength}, but read {reallyRead}.")
                 : extraFields;
+        }
+
+
+        public static async Task<T> CreateFromStreamAsync<T>(Stream stream) where T : ExtraFieldBase, new()
+        {
+            var zipHeader = new T();
+            await zipHeader.LoadFromStreamAsync(stream);
+            return zipHeader;
         }
     }
 }

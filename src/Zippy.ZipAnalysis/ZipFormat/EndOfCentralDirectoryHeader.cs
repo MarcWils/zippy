@@ -5,20 +5,7 @@ using Zippy.ZipAnalysis.Extensions;
 namespace Zippy.ZipAnalysis.ZipFormat
 {
     public class EndOfCentralDirectoryHeader : ZipHeaderBase, IEndOfCentralDirectoryHeader
-    {
-
-        public EndOfCentralDirectoryHeader(Stream source)
-        {
-            LoadFromStream(source);
-        }
-
-        public EndOfCentralDirectoryHeader()
-        {
-
-        }
-
-
-
+    { 
         public const uint Signature = 0x06054b50;
         public static uint MinimumLength => 22;
         public static uint MaximumLength => 22 + 65535;
@@ -51,12 +38,9 @@ namespace Zippy.ZipAnalysis.ZipFormat
             }
         }
 
-        public byte[]? ZipFileCommentBytes { get; set; }
+        public byte[] ZipFileCommentBytes { get; set; } = Array.Empty<byte>();
 
-        public override ulong Length { get { return (ulong)(MinimumLength + ZipFileCommentLength); } }
-
-        public override long PositionFirstByte { get; set; }
-
+        public override ulong Length { get { return (MinimumLength + ZipFileCommentLength); } }
 
         public long CentralDirectoryOffset { get => OffsetOfCentralDirectory; }
 
@@ -83,33 +67,30 @@ namespace Zippy.ZipAnalysis.ZipFormat
             return result;
         }
 
-        public override bool LoadFromStream(Stream source, bool includeSignature = false)
+        public override async Task<bool> LoadFromStreamAsync(Stream source, bool includeSignature)
         {
             try
             {
-                using (var reader = new BinaryReader(source, Encoding.UTF8, true))
+                if (includeSignature)
                 {
-                    if (includeSignature)
+                    var signature = await source.ReadUInt32Async();
+                    if (signature != Signature)
                     {
-                        var signature = reader.ReadUInt32();
-                        if (signature != Signature)
-                        {
-                            throw new ArgumentException("Wrong signature");
-                        }
+                        throw new ArgumentException("Wrong signature");
                     }
-
-                    PositionFirstByte = source.Position - 4;
-                    NumberOfThisDisk = reader.ReadUInt16();
-                    NumberOfDiskWithStartOfCentralDirectory = reader.ReadUInt16();
-                    NumberOfEntriesInCentralDirectoryOnThisDisk = reader.ReadUInt16();
-                    TotalNumberOfEntriesInCentralDirectory = reader.ReadUInt16();
-                    SizeOfCentralDirectory = reader.ReadUInt32();
-                    OffsetOfCentralDirectory = reader.ReadUInt32();
-                    var zipFileCommentLength = reader.ReadUInt16();
-
-                    ZipFileCommentBytes = reader.ReadBytes(zipFileCommentLength);
-                    return ZipFileCommentBytes.Length == zipFileCommentLength;
                 }
+
+                PositionFirstByte = source.Position - 4;
+                NumberOfThisDisk = await source.ReadUInt16Async();
+                NumberOfDiskWithStartOfCentralDirectory = await source.ReadUInt16Async();
+                NumberOfEntriesInCentralDirectoryOnThisDisk = await source.ReadUInt16Async();
+                TotalNumberOfEntriesInCentralDirectory = await source.ReadUInt16Async();
+                SizeOfCentralDirectory = await source.ReadUInt32Async();
+                OffsetOfCentralDirectory = await source.ReadUInt32Async();
+                var zipFileCommentLength = await source.ReadUInt16Async();
+
+                ZipFileCommentBytes = await source.ReadBytesAsync(zipFileCommentLength);
+                return ZipFileCommentBytes.Length == zipFileCommentLength;
             }
             catch (EndOfStreamException)
             {
@@ -119,36 +100,10 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
 
 
-        /// Gaat op zoek naar de end-of-central-directory header en controleert dat deze volledig is.
-        /// Er wordt achteraan begonnen met zoeken
-        /// Er wordt maximaal gezocht naar de maximale lengte van de end of central directory header
-        /// Stream moet seekable zijn, en de lengte moet op te vragen zijn
-        public static EndOfCentralDirectoryHeader? GetEndOfCentralDirectoryHeader(Stream source)
-        {
-            var startPos = Math.Max(0, source.Length - MinimumLength);
-            var endPos = Math.Max(0, source.Length - MaximumLength);
-
-            for (long position = startPos; position >= endPos; position--)
-            {
-                source.Position = position;
-
-                if (source.ReadSignature() == Signature)
-                {
-                    var endOfCentralDirectoryHeader = new EndOfCentralDirectoryHeader();
-                    if (endOfCentralDirectoryHeader.LoadFromStream(source))
-                    {
-                        return endOfCentralDirectoryHeader;
-                    }
-                }
-            }
-            return null;
-        }
-
-
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine($"Header: End of central directory header");
             builder.AppendLine($"Position first byte: {PositionFirstByte}");
             builder.AppendLine($"Signature: {Signature:x}");
