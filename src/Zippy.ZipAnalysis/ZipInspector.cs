@@ -1,5 +1,4 @@
-﻿using System;
-using Zippy.ZipAnalysis.Extensions;
+﻿using Zippy.ZipAnalysis.Extensions;
 using Zippy.ZipAnalysis.ZipFormat;
 
 namespace Zippy.ZipAnalysis
@@ -27,6 +26,7 @@ namespace Zippy.ZipAnalysis
             { EndOfCentralDirectoryHeader.Signature, CreateFromStreamAsync<EndOfCentralDirectoryHeader> },
             { Zip64EndOfCentralDirectoryLocatorHeader.Signature, CreateFromStreamAsync<Zip64EndOfCentralDirectoryLocatorHeader> },
             { Zip64EndOfCentralDirectoryRecordHeader.Signature, CreateFromStreamAsync<Zip64EndOfCentralDirectoryRecordHeader> },
+            { DataDescriptorOrSplitArchiveHeader.Signature, DataDescriptorOrSplitArchiveHeader.GetCorrectZipHeader },
         };
 
 
