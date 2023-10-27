@@ -16,18 +16,16 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public uint TotalNumberOfDisks { get; set; }
 
+
         public override ulong Length => (ulong)_length;
 
-        public override long PositionFirstByte { get; set; }
-
-        public override bool LoadFromStream(Stream source, bool includeSignature = false)
+        public override async Task<bool> LoadFromStreamAsync(Stream source, bool includeSignature)
         {
             try
             {
-                using var reader = new BinaryReader(source, Encoding.UTF8, true);
                 if (includeSignature)
                 {
-                    var signature = reader.ReadUInt32();
+                    var signature = await source.ReadUInt32Async();
                     if (signature != Signature)
                     {
                         throw new ArgumentException("Wrong signature");
@@ -35,9 +33,9 @@ namespace Zippy.ZipAnalysis.ZipFormat
                 }
 
                 PositionFirstByte = source.Position - 4;
-                NumberOfDiskWithStartOfZip64EndOfCentralDirectory = reader.ReadUInt32();
-                OffsetOfZip64EndOfCentralDirectory = reader.ReadUInt64();
-                TotalNumberOfDisks = reader.ReadUInt32();
+                NumberOfDiskWithStartOfZip64EndOfCentralDirectory = await source.ReadUInt32Async();
+                OffsetOfZip64EndOfCentralDirectory = await source.ReadUInt64Async();
+                TotalNumberOfDisks = await source.ReadUInt32Async();
                 return true;
             }
             catch (EndOfStreamException)
@@ -62,43 +60,13 @@ namespace Zippy.ZipAnalysis.ZipFormat
         }
 
 
-        public static Zip64EndOfCentralDirectoryLocatorHeader? GetZip64EndOfCentralDirectoryLocatorHeader(Stream source,
-                                                                                                          EndOfCentralDirectoryHeader endOfCentralDirectoryHeader)
-        {
-            long startPos, endPos;
-
-            if (endOfCentralDirectoryHeader.PositionFirstByte - _length > 0) // endOfCentralDirectoryHeader was al uitgelezen en adh daarvan kan positie van dit record bepaald worden 
-            {
-                startPos = endOfCentralDirectoryHeader.PositionFirstByte - _length;
-                endPos = startPos;
-            }
-            else
-            {
-                startPos = Math.Max(0, source.Length - EndOfCentralDirectoryHeader.MinimumLength - _length);
-                endPos = Math.Max(0, source.Length - EndOfCentralDirectoryHeader.MaximumLength - _length);
-            }
-
-            for (long pos = startPos; pos >= endPos; pos--)
-            {
-                source.Position = pos;
-                if (source.ReadSignature() == Signature)
-                {
-                    var zip64EndOfCentralDirectoryLocatorHeader = new Zip64EndOfCentralDirectoryLocatorHeader();
-                    if (zip64EndOfCentralDirectoryLocatorHeader.LoadFromStream(source))
-                    {
-                        return zip64EndOfCentralDirectoryLocatorHeader;
-                    }
-                }
-            }
-
-            return null;
-        }
+        
 
 
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine($"Header: Zip64 end of central directory locator header");
             builder.AppendLine($"Position first byte: {PositionFirstByte}");
             builder.AppendLine($"Length: {Length}");

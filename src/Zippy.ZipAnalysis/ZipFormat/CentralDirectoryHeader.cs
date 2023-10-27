@@ -5,16 +5,7 @@ using Zippy.ZipAnalysis.Extensions;
 namespace Zippy.ZipAnalysis.ZipFormat
 {
     public class CentralDirectoryHeader : ZipEntryHeaderBase
-    {
-        public CentralDirectoryHeader(Stream source)
-        {
-            LoadFromStream(source);
-        }
-
-        public CentralDirectoryHeader()
-        {
-        }
-
+    { 
         public const uint Signature = 0x02014b50;
 
 
@@ -55,56 +46,44 @@ namespace Zippy.ZipAnalysis.ZipFormat
             }
         }
 
-        protected byte[] FileCommentBytes { get; set; }
+        protected byte[] FileCommentBytes { get; set; } = Array.Empty<byte>();
 
-        public override long PositionFirstByte { get; set; }
-
-
-
-
-
-
-
-
-
-        public override bool LoadFromStream(Stream source, bool includeSignature = false)
+        public override async Task<bool> LoadFromStreamAsync(Stream source, bool includeSignature)
         {
             try
             {
-                using (var reader = new BinaryReader(source, Encoding.UTF8, true))
+                if (includeSignature)
                 {
-                    if (includeSignature)
+                    var signature = await source.ReadUInt32Async();
+                    if (signature != Signature)
                     {
-                        var signature = reader.ReadUInt32();
-                        if (signature != Signature)
-                        {
-                            throw new ArgumentException("Wrong signature");
-                        }
+                        throw new ArgumentException("Wrong signature");
                     }
-
-                    PositionFirstByte = source.Position - 4;
-                    VersionMadeBy = reader.ReadUInt16();
-                    VersionNeededToExtract = reader.ReadUInt16();
-                    GeneralPurposeBitFlag = reader.ReadUInt16();
-                    CompressionMethod = reader.ReadUInt16();
-                    LastModificationFileTime = reader.ReadUInt16();
-                    LastModificationFileDate = reader.ReadUInt16();
-                    Crc32 = reader.ReadUInt32();
-                    CompressedSize = reader.ReadUInt32();
-                    UncompressedSize = reader.ReadUInt32();
-                    var fileNameLength = reader.ReadUInt16();
-                    var extraFieldLength = reader.ReadUInt16();
-                    var fileCommentLength = reader.ReadUInt16();
-                    DiskNumberStart = reader.ReadUInt16();
-                    InternalFileAttributes = reader.ReadUInt16();
-                    ExternalFileAttributes = reader.ReadUInt32();
-                    RelativeOffsetOfLocalHeader = reader.ReadUInt32();
-
-                    FileNameBytes = reader.ReadBytes(fileNameLength);
-                    ExtraFields = ReadExtraFields(reader, extraFieldLength);
-                    FileCommentBytes = reader.ReadBytes(fileCommentLength);
-                    return FileNameBytes.Length == fileNameLength && FileCommentBytes.Length == fileCommentLength;
                 }
+
+                PositionFirstByte = source.Position - 4;
+                VersionMadeBy = await source.ReadUInt16Async();
+                VersionNeededToExtract = await source.ReadUInt16Async();
+                GeneralPurposeBitFlag = await source.ReadUInt16Async();
+                CompressionMethod = await source.ReadUInt16Async();
+                LastModificationFileTime = await source.ReadUInt16Async();
+                LastModificationFileDate = await source.ReadUInt16Async();
+                Crc32 = await source.ReadUInt32Async();
+                CompressedSize = await source.ReadUInt32Async();
+                UncompressedSize = await source.ReadUInt32Async();
+                var fileNameLength = await source.ReadUInt16Async();
+                var extraFieldLength = await source.ReadUInt16Async();
+                var fileCommentLength = await source.ReadUInt16Async();
+                DiskNumberStart = await source.ReadUInt16Async();
+                InternalFileAttributes = await source.ReadUInt16Async();
+                ExternalFileAttributes = await source.ReadUInt32Async();
+                RelativeOffsetOfLocalHeader = await source.ReadUInt32Async();
+
+                FileNameBytes = await source.ReadBytesAsync(fileNameLength);
+                ExtraFields = await ReadExtraFieldsAsync(source, extraFieldLength);
+                FileCommentBytes = await source.ReadBytesAsync(fileCommentLength);
+                return FileNameBytes.Length == fileNameLength && FileCommentBytes.Length == fileCommentLength;
+
             }
             catch (EndOfStreamException)
             {
@@ -155,28 +134,10 @@ namespace Zippy.ZipAnalysis.ZipFormat
         }
 
 
-        public static IEnumerable<CentralDirectoryHeader> GetCentralDirectoryHeaders(Stream source, IEndOfCentralDirectoryHeader endOfCentralDirectoryHeader)
-        {
-            List<CentralDirectoryHeader> centralDirectoryHeaders = new List<CentralDirectoryHeader>();
-
-            source.Seek(endOfCentralDirectoryHeader.CentralDirectoryOffset, SeekOrigin.Begin);
-            while (source.ReadSignature() == Signature)
-            {
-                var centralDirectoryHeader = new CentralDirectoryHeader();
-                if (centralDirectoryHeader.LoadFromStream(source))
-                {
-                    centralDirectoryHeaders.Add(centralDirectoryHeader);
-                }
-            }
-
-            return centralDirectoryHeaders;
-        }
-
-
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine($"Header: Central directory header");
             builder.AppendLine($"Position first byte: {PositionFirstByte}");
             builder.AppendLine($"Signature: {Signature:x}");
@@ -199,7 +160,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
             builder.AppendLine($"RelativeOffsetOfLocalHeader: {RelativeOffsetOfLocalHeader}");
             builder.AppendLine($"FileName: {FileName}");
             builder.AppendLine($"FileComment: {FileComment}");
-            builder.AppendLine($"{String.Concat(ExtraFields?.Select(e => e.ToString()) ?? new string[0])}");
+            builder.AppendLine($"{string.Concat(ExtraFields?.Select(e => e.ToString()) ?? Array.Empty<string>())}");
 
             return builder.ToString();
 

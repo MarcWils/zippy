@@ -6,57 +6,42 @@ namespace Zippy.ZipAnalysis.ZipFormat
 {
     public class LocalFileHeader : ZipEntryHeaderBase
     {
-        public LocalFileHeader(Stream source)
-        {
-            LoadFromStream(source);
-        }
-
-        public LocalFileHeader()
-        {
-
-        }
-
         public const uint Signature = 0x04034b50;
 
         public static uint MinimumLength => 30;
 
         public override ulong Length { get { return (ulong)MinimumLength + FileNameLength + ExtraFieldLength; } }
 
-        public override long PositionFirstByte { get; set; }
-
         public override ulong OffsetLocalFileHeader => (ulong)PositionFirstByte;
 
-        public override bool LoadFromStream(Stream source, bool includeSignature = false)
+        public override async Task<bool> LoadFromStreamAsync(Stream source, bool includeSignature)
         {
             try
             {
-                using (var reader = new BinaryReader(source, Encoding.UTF8, true))
+                if (includeSignature)
                 {
-                    if (includeSignature)
+                    var signature = await source.ReadUInt32Async();
+                    if (signature != Signature)
                     {
-                        var signature = reader.ReadUInt32();
-                        if (signature != Signature)
-                        {
-                            throw new ArgumentException("Wrong signature");
-                        }
+                        throw new ArgumentException("Wrong signature");
                     }
-                    PositionFirstByte = source.Position - 4;
-                    VersionNeededToExtract = reader.ReadUInt16();
-                    GeneralPurposeBitFlag = reader.ReadUInt16();
-                    CompressionMethod = reader.ReadUInt16();
-                    LastModificationFileTime = reader.ReadUInt16();
-                    LastModificationFileDate = reader.ReadUInt16();
-                    Crc32 = reader.ReadUInt32();
-                    CompressedSize = reader.ReadUInt32();
-                    UncompressedSize = reader.ReadUInt32();
-                    var fileNameLength = reader.ReadUInt16();
-                    var extraFieldLength = reader.ReadUInt16();
-
-                    FileNameBytes = reader.ReadBytes(fileNameLength);
-                    ExtraFields = ReadExtraFields(reader, extraFieldLength);
-
-                    return FileNameBytes.Length == fileNameLength;
                 }
+                PositionFirstByte = source.Position - 4;
+                VersionNeededToExtract = await source.ReadUInt16Async();
+                GeneralPurposeBitFlag = await source.ReadUInt16Async();
+                CompressionMethod = await source.ReadUInt16Async();
+                LastModificationFileTime = await source.ReadUInt16Async();
+                LastModificationFileDate = await source.ReadUInt16Async();
+                Crc32 = await source.ReadUInt32Async();
+                CompressedSize = await source.ReadUInt32Async();
+                UncompressedSize = await source.ReadUInt32Async();
+                var fileNameLength = await source.ReadUInt16Async();
+                var extraFieldLength = await source.ReadUInt16Async();
+
+                FileNameBytes = await source.ReadBytesAsync(fileNameLength);
+                ExtraFields = await ReadExtraFieldsAsync(source, extraFieldLength);
+
+                return FileNameBytes.Length == fileNameLength;
             }
             catch (EndOfStreamException)
             {
@@ -94,31 +79,11 @@ namespace Zippy.ZipAnalysis.ZipFormat
             return result;
         }
 
-        public static IEnumerable<LocalFileHeader> GetLocalFileHeaders(Stream source, IEnumerable<CentralDirectoryHeader> centralDirectoryHeaders)
-        {
-            List<LocalFileHeader> localFileHeaders = new List<LocalFileHeader>();
-
-            foreach (var centralDirectoryHeader in centralDirectoryHeaders)
-            {
-                source.Seek(centralDirectoryHeader.RelativeOffsetOfLocalHeader, SeekOrigin.Begin);
-
-                if (source.ReadSignature() == Signature)
-                {
-                    var localFileHeader = new LocalFileHeader();
-                    if (localFileHeader.LoadFromStream(source))
-                    {
-                        localFileHeaders.Add(localFileHeader);
-                    }
-                }
-            }
-
-            return localFileHeaders;
-        }
 
         [ExcludeFromCodeCoverage]
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendLine($"Header: Local file header");
             builder.AppendLine($"Position first byte: {PositionFirstByte}");
             builder.AppendLine($"Signature: {Signature:x}");
@@ -134,7 +99,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
             builder.AppendLine($"FileNameLength: {FileNameLength}");
             builder.AppendLine($"ExtraFieldLength: {ExtraFieldLength}");
             builder.AppendLine($"FileName: {FileName}");
-            builder.AppendLine($"{String.Concat(ExtraFields?.Select(e => e.ToString()) ?? new string[0])}");
+            builder.AppendLine($"{string.Concat(ExtraFields?.Select(e => e.ToString()) ?? Array.Empty<string>())}");
             return builder.ToString();
         }
     }

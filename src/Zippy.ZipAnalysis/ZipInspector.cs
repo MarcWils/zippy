@@ -4,40 +4,82 @@ using Zippy.ZipAnalysis.ZipFormat;
 
 namespace Zippy.ZipAnalysis
 {
-    public static class ZipInspector
+    public class ZipInspector
     {
         public static readonly long MaxSupportedSize = 25 * 1024 * 1024;
 
-        public static async IAsyncEnumerable<ZipHeaderBase> GetZipHeadersAsync(Stream source)
+        private static readonly uint _commonHeaderMask = 0x0000FFFFu;
+        private static readonly uint _commonHeader = 0x00004b50u;
+
+
+        private readonly Stream _source;
+
+        public ZipInspector(Stream source)
         {
-            uint possibleHeader = 0;
-            int lastByte;
+            _source = source ?? throw new ArgumentNullException(nameof(source));
+        }
 
-            while ((lastByte = await source.ReadByteAsync()) != -1)
+        private static readonly Dictionary<uint, Func<Stream, Task<ZipHeaderBase>>> _supportedZipHeaders = new()
+        {
+            { LocalFileHeader.Signature, CreateFromStreamAsync<LocalFileHeader> },
+            { CentralDirectoryHeader.Signature, CreateFromStreamAsync<CentralDirectoryHeader> },
+            { EndOfCentralDirectoryHeader.Signature, CreateFromStreamAsync<EndOfCentralDirectoryHeader> },
+            { Zip64EndOfCentralDirectoryLocatorHeader.Signature, CreateFromStreamAsync<Zip64EndOfCentralDirectoryLocatorHeader> },
+            { Zip64EndOfCentralDirectoryRecordHeader.Signature, CreateFromStreamAsync<Zip64EndOfCentralDirectoryRecordHeader> },
+        };
+
+
+
+        public async IAsyncEnumerable<ZipHeaderBase> GetZipHeadersAsync()
+        {
+            ZipHeaderBase? header;
+            while ((header = await GetNextZipHeaderAsync(_source)) != null)
             {
-                possibleHeader >>= 8;
-                possibleHeader |= (uint)(lastByte << 24);
-
-                if ((possibleHeader & 0x000000FF) == 0x00000050)
-                {
-                    var header = possibleHeader switch
-                    {
-                        LocalFileHeader.Signature => (ZipHeaderBase)new LocalFileHeader(source),
-                        CentralDirectoryHeader.Signature => new CentralDirectoryHeader(source),
-                        EndOfCentralDirectoryHeader.Signature => new EndOfCentralDirectoryHeader(source),
-                        _ => null
-                    };
-
-                    if (header != null)
-                    {
-                        yield return header;
-                    }
-                }
-
+                yield return header;
             }
         }
 
-        public static IEnumerable<ValidationResult> GetValdationResults(this IEnumerable<ZipHeaderBase> _)
+
+        private static async Task<ZipHeaderBase?> GetNextZipHeaderAsync(Stream source)
+        {
+            uint header = 0;
+
+            try
+            {
+                while (!_supportedZipHeaders.ContainsKey(header))
+                {
+                    if ((header & (_commonHeaderMask << 24)) == (_commonHeader << 24) ||
+                        (header & (_commonHeaderMask << 16)) == (_commonHeader << 16) ||
+                        (header & (_commonHeaderMask << 8)) == (_commonHeader << 8))
+                    {
+                        var b = await source.ReadByteAsync();
+                        header >>= 8;
+                        header |= (uint)(b << 24);
+                    }
+                    else
+                    {
+                        header = await source.ReadUInt32Async();
+                    }
+                }
+
+                return await _supportedZipHeaders[header](source);
+            }
+            catch (EndOfStreamException)
+            {
+                return null;
+            }
+        }
+
+
+
+        private static async Task<ZipHeaderBase> CreateFromStreamAsync<T>(Stream stream) where T : ZipHeaderBase, new()
+        {
+            var zipHeader = new T();
+            await zipHeader.LoadFromStreamAsync(stream);
+            return zipHeader;
+        }
+
+        public static IEnumerable<ValidationResult> GetValdationResults(IEnumerable<ZipHeaderBase> _)
         {
             return Array.Empty<ValidationResult>();
         }

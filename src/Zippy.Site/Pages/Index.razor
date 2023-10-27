@@ -1,6 +1,8 @@
 ﻿@page "/"
 @using System.IO;
+@using System.Diagnostics;
 @using Zippy.ZipAnalysis;
+@using Zippy.ZipAnalysis.IO;
 @using Zippy.ZipAnalysis.Extensions;
 @using Zippy.ZipAnalysis.ZipFormat;
 @using Microsoft.AspNetCore.Components.Forms;
@@ -25,6 +27,7 @@
                 <ZipFileComponent FileName="@fileName" Headers="headers" />
             </div>
         </div>
+        <span>File processed in @duration</span>
     }
 </div>
 
@@ -33,6 +36,7 @@
 {
     private string? fileName;
     private string? errorMessage;
+    private TimeSpan? duration;
     private IEnumerable<ZipAnalysis.ZipFormat.ZipHeaderBase>? headers;
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
@@ -42,14 +46,18 @@
         if (e.File.Size > ZipInspector.MaxSupportedSize)
         {
             errorMessage = $"File is too big. Only files up to {ZipInspector.MaxSupportedSize.ToReadableFileSize()} are supported.";
+            headers = null;
+            duration = null;
         }
         else
         {
-            using var stream = new MemoryStream();
-            await e.File.OpenReadStream(ZipInspector.MaxSupportedSize).CopyToAsync(stream); // oops, we're loading the whole file into memory, not ideal.
-            stream.Position = 0;
-            headers = await ZipInspector.GetZipHeadersAsync(stream).ToListAsync();
+            var sw = Stopwatch.StartNew();
+            var fileStream = e.File.OpenReadStream(ZipInspector.MaxSupportedSize);
+            var bufferStream = new BufferedStream(new FakeSeekableStream(fileStream), 512 * 1024); // Need fake seekable stream as BufferedStream mistakenly needs underlying stream to be seekable to get Position. (https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/IO/BufferedStream.cs,197)
+
+            headers = await new ZipInspector(bufferStream).GetZipHeadersAsync().ToListAsync();
             errorMessage = !headers.Any() ? "Please select a valid ZIP-file" : null;
+            duration = sw.Elapsed;
         }
     }
 }
