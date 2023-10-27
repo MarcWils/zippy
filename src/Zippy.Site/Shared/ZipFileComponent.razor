@@ -1,0 +1,53 @@
+﻿@using Zippy.ZipAnalysis.Validations;
+@using Zippy.ZipAnalysis;
+
+@if (Headers != null)
+{
+    var validationResults = GetValidationResults();
+    if (validationResults.Any())
+    {
+        <div class="alert alert-success align-items-center" role="alert">
+            <div>
+                <span class="alert-message">Validations pass, <a data-bs-toggle="collapse" class="alert-link" href="#validationResults" role="button" aria-expanded="false" aria-controls="validationResults">show details</a></span>
+            </div>
+            <div class="collapse mt-2" id="validationResults">
+                <div class="card card-body">
+                    TODO
+                </div>
+            </div>
+        </div>
+    }
+
+    <h3>@FileName</h3>
+    <div class="accordion">
+        @foreach (var header in Headers)
+        {
+            switch (header)
+            {
+                case LocalFileHeader lf:
+                    <LocalFileHeaderComponent LocalFileHeader="lf" />
+                    break;
+                case CentralDirectoryHeader cd:
+                    <CentralDirectoryHeaderComponent CentralDirectoryHeader="cd" />
+                    break;
+                case EndOfCentralDirectoryHeader eocd:
+                    <EndOfCentralDirectoryHeaderComponent EndOfCentralDirectoryHeader="eocd" />
+                    break;
+            }
+        }
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string? FileName { get; set; }
+
+    [Parameter]
+    public IEnumerable<ZipHeaderBase>? Headers { get; set; }
+
+    private IEnumerable<ValidationResult> GetValidationResults()
+    {
+        return ZipInspector.GetValdationResults(Headers!);
+    }
+}

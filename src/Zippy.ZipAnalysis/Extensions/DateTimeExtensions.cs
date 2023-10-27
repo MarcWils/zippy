@@ -1,6 +1,6 @@
 ﻿namespace Zippy.ZipAnalysis.Extensions
 {
-    public static class NumericExtensions
+    public static class DateTimeExtensions
     {
         public static DateTime ToDate(this ushort dosDate)
         {

@@ -6,7 +6,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
 {
     public class Zip64EndOfCentralDirectoryLocatorHeader : ZipHeaderBase
     {
-        private static long _length = 20;
+        private static readonly long _length = 20;
 
         public const uint Signature = 0x07064b50;
 
@@ -16,7 +16,6 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public uint TotalNumberOfDisks { get; set; }
 
-
         public override ulong Length => (ulong)_length;
 
         public override long PositionFirstByte { get; set; }
@@ -25,23 +24,21 @@ namespace Zippy.ZipAnalysis.ZipFormat
         {
             try
             {
-                using (var reader = new BinaryReader(source, Encoding.UTF8, true))
+                using var reader = new BinaryReader(source, Encoding.UTF8, true);
+                if (includeSignature)
                 {
-                    if (includeSignature)
+                    var signature = reader.ReadUInt32();
+                    if (signature != Signature)
                     {
-                        var signature = reader.ReadUInt32();
-                        if (signature != Signature)
-                        {
-                            throw new ArgumentException("Wrong signature");
-                        }
+                        throw new ArgumentException("Wrong signature");
                     }
-
-                    PositionFirstByte = source.Position - 4;
-                    NumberOfDiskWithStartOfZip64EndOfCentralDirectory = reader.ReadUInt32();
-                    OffsetOfZip64EndOfCentralDirectory = reader.ReadUInt64();
-                    TotalNumberOfDisks = reader.ReadUInt32();
-                    return true;
                 }
+
+                PositionFirstByte = source.Position - 4;
+                NumberOfDiskWithStartOfZip64EndOfCentralDirectory = reader.ReadUInt32();
+                OffsetOfZip64EndOfCentralDirectory = reader.ReadUInt64();
+                TotalNumberOfDisks = reader.ReadUInt32();
+                return true;
             }
             catch (EndOfStreamException)
             {
@@ -65,7 +62,8 @@ namespace Zippy.ZipAnalysis.ZipFormat
         }
 
 
-        public static Zip64EndOfCentralDirectoryLocatorHeader GetZip64EndOfCentralDirectoryLocatorHeader(Stream source, EndOfCentralDirectoryHeader endOfCentralDirectoryHeader)
+        public static Zip64EndOfCentralDirectoryLocatorHeader? GetZip64EndOfCentralDirectoryLocatorHeader(Stream source,
+                                                                                                          EndOfCentralDirectoryHeader endOfCentralDirectoryHeader)
         {
             long startPos, endPos;
 

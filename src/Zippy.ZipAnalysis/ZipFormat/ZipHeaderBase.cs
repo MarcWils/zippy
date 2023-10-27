@@ -4,7 +4,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
 {
     public abstract class ZipHeaderBase
     {
-        protected Encoding DefaultEncoding => Encoding.GetEncoding("IBM437");
+        protected static Encoding DefaultEncoding => Encoding.GetEncoding("IBM437");
 
         static ZipHeaderBase()
         {
@@ -38,16 +38,16 @@ namespace Zippy.ZipAnalysis.ZipFormat
                 switch (tag)
                 {
                     case Zip64ExtraField.Tag:
-                        extraFields.Add(new Zip64ExtraField(reader.BaseStream)); 
+                        extraFields.Add(new Zip64ExtraField(reader.BaseStream));
                         break;
-                    case NTFSExtraField.Tag: 
-                        extraFields.Add(new NTFSExtraField(reader.BaseStream));
+                    case NtfsExtraField.Tag:
+                        extraFields.Add(new NtfsExtraField(reader.BaseStream));
                         break;
                     default:
                         extraFields.Add(new NotImplementedExtraField(tag, reader.BaseStream));
                         break;
                 }
-                leftToRead -= extraFields.Last().Length;
+                leftToRead -= extraFields[^1].Length;
             }
 
             var reallyRead = extraFields.Sum(e => e.Length);

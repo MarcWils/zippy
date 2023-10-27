@@ -1,4 +1,5 @@
 ﻿using Zippy.ZipAnalysis.Extensions;
+using Zippy.ZipAnalysis.Validations;
 using Zippy.ZipAnalysis.ZipFormat;
 
 namespace Zippy.ZipAnalysis
@@ -6,7 +7,7 @@ namespace Zippy.ZipAnalysis
     public static class ZipInspector
     {
         public static readonly long MaxSupportedSize = 25 * 1024 * 1024;
-        
+
         public static async IAsyncEnumerable<ZipHeaderBase> GetZipHeadersAsync(Stream source)
         {
             uint possibleHeader = 0;
@@ -34,6 +35,11 @@ namespace Zippy.ZipAnalysis
                 }
 
             }
+        }
+
+        public static IEnumerable<ValidationResult> GetValdationResults(this IEnumerable<ZipHeaderBase> _)
+        {
+            return Array.Empty<ValidationResult>();
         }
     }
 }

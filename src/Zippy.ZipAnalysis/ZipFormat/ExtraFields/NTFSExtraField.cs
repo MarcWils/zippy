@@ -3,26 +3,15 @@ using System.Text;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
-    public class NTFSExtraField : ExtraFieldBase
+    public class NtfsExtraField : ExtraFieldBase
     {
 
-
-        public class NTFSAttribute
-        {
-            public ushort Tag { get; set; }
-            public ushort Size { get; set; }
-            public ulong FileLastModificationTime { get; set; }
-            public ulong FileLastAccessTime { get; set; }
-            public ulong FileCreationTime { get; set; }
-        }
-
-
-        public NTFSExtraField(Stream source)
+        public NtfsExtraField(Stream source)
         {
             LoadFromStream(source);
         }
 
-        public NTFSExtraField()
+        public NtfsExtraField()
         {
         }
 
@@ -34,7 +23,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
         public uint Reserved { get; set; }
 
 
-        public IEnumerable<NTFSAttribute> NTFSAttributes { get; private set; }
+        public IEnumerable<NtfsAttribute> NtfsAttributes { get; private set; }
 
 
         public override ushort Length { get => ((ushort)(ExtraBlockSize + 4)); }
@@ -60,7 +49,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
                     ExtraBlockSize = reader.ReadUInt16();
                     Reserved = reader.ReadUInt32();
 
-                    var ntfsAttributes = new List<NTFSAttribute>();
+                    var ntfsAttributes = new List<NtfsAttribute>();
                     int _bytesToRead = ExtraBlockSize - 4; // 4 bytes al gelezen bij uitlezen ExtraBlockSize
                     while (_bytesToRead > 4)
                     {
@@ -68,7 +57,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
                         var size = reader.ReadUInt16();
                         if (tag == 1 && size == 24) // het enige dat beschreven staat in de appnote..
                         {
-                            ntfsAttributes.Add(new NTFSAttribute
+                            ntfsAttributes.Add(new NtfsAttribute
                             {
                                 Tag = tag,
                                 Size = size,
@@ -80,7 +69,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
                         _bytesToRead -= 28;
                     }
 
-                    NTFSAttributes = ntfsAttributes;
+                    NtfsAttributes = ntfsAttributes;
                     return true;
                 }
             }
@@ -100,7 +89,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
                 writer.Write(Tag);
                 writer.Write(ExtraBlockSize);
                 writer.Write(Reserved);
-                foreach (var attribute in NTFSAttributes)
+                foreach (var attribute in NtfsAttributes)
                 {
                     writer.Write(attribute.Tag);
                     writer.Write(attribute.Size);
@@ -126,7 +115,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
             builder.AppendLine($"ExtraBlockSize: {ExtraBlockSize}");
             builder.AppendLine($"Reserved: {Reserved}");
-            foreach (var attribute in NTFSAttributes)
+            foreach (var attribute in NtfsAttributes)
             {
                 builder.AppendLine($"NTFS attribute:");
                 builder.AppendLine($"  Tag: {attribute.Tag}");

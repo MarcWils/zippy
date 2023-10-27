@@ -39,41 +39,39 @@ namespace Zippy.ZipAnalysis.ZipFormat
         {
             try
             {
-                using (var reader = new BinaryReader(source, Encoding.UTF8, true))
+                using var reader = new BinaryReader(source, Encoding.UTF8, true);
+                if (includeTag)
                 {
-                    if (includeTag)
+                    var tag = reader.ReadUInt16();
+                    if (tag != Tag)
                     {
-                        var tag = reader.ReadUInt16();
-                        if (tag != Tag)
-                        {
-                            throw new ArgumentException("Wrong tag for Zip64");
-                        }
+                        throw new ArgumentException("Wrong tag for Zip64");
                     }
-                    PositionFirstByte = source.Position - 2;
-                    ExtraBlockSize = reader.ReadUInt16();
-
-                    if (ExtraBlockSize >= 8)
-                    {
-                        UncompressedSize = reader.ReadUInt64();
-                    }
-
-                    if (ExtraBlockSize >= 16)
-                    {
-                        CompressedSize = reader.ReadUInt64();
-                    }
-
-                    if (ExtraBlockSize >= 24)
-                    {
-                        RelativeHeaderOffset = reader.ReadUInt64();
-                    }
-
-                    if (ExtraBlockSize == 28)
-                    {
-                        DiskStartNumber = reader.ReadUInt32();
-                    }
-
-                    return true;
                 }
+                PositionFirstByte = source.Position - 2;
+                ExtraBlockSize = reader.ReadUInt16();
+
+                if (ExtraBlockSize >= 8)
+                {
+                    UncompressedSize = reader.ReadUInt64();
+                }
+
+                if (ExtraBlockSize >= 16)
+                {
+                    CompressedSize = reader.ReadUInt64();
+                }
+
+                if (ExtraBlockSize >= 24)
+                {
+                    RelativeHeaderOffset = reader.ReadUInt64();
+                }
+
+                if (ExtraBlockSize == 28)
+                {
+                    DiskStartNumber = reader.ReadUInt32();
+                }
+
+                return true;
             }
             catch (EndOfStreamException)
             {

@@ -1,0 +1,65 @@
+﻿@if (Zip64ExtraField != null)
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">ZIP64 extra field</h5>
+
+            <table class="table table-condensed table-striped table-hover table-bordered">
+                <thead>
+                    <tr class="table-light">
+                        <th>Property</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Position first byte</td>
+                        <td>@Zip64ExtraField.PositionFirstByte</td>
+                    </tr>
+                    <tr>
+                        <td>Length</td>
+                        <td>@Zip64ExtraField.Length</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-condensed table-striped table-hover table-bordered">
+                <thead>
+                    <tr class="table-light">
+                        <th>Field</th>
+                        <th>Raw value</th>
+                        <th>Display value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Compressed size</td>
+                        <td>@Zip64ExtraField.CompressedSize.ToHexString()</td>
+                        <td>@Zip64ExtraField.CompressedSize.ToReadableFileSize()</td>
+                    </tr>
+                    <tr>
+                        <td>Uncompressed size</td>
+                        <td>@Zip64ExtraField.UncompressedSize.ToHexString()</td>
+                        <td>@Zip64ExtraField.UncompressedSize.ToReadableFileSize()</td>
+                    </tr>
+                    <tr>
+                        <td>Relative header offset</td>
+                        <td>@Zip64ExtraField.RelativeHeaderOffset.ToHexString()</td>
+                        <td>@Zip64ExtraField.RelativeHeaderOffset</td>
+                    </tr>
+                    <tr>
+                        <td>Disk start number</td>
+                        <td>@Zip64ExtraField.DiskStartNumber.ToHexString()</td>
+                        <td>@Zip64ExtraField.DiskStartNumber</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public Zip64ExtraField? Zip64ExtraField { get; set; }
+}
