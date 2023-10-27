@@ -1,5 +1,6 @@
 using System.Text;
 using Zippy.ZipAnalysis.ZipFormat;
+using Zippy.ZipAnalysis.ZipFormat.ExtraFields;
 
 namespace Zippy.ZipAnalysis.Tests
 {
@@ -32,7 +33,7 @@ namespace Zippy.ZipAnalysis.Tests
         public async Task Given_A_ZipArchive_With_Zip64_Entry_GetZipHeadersAsync_Should_Return_Header()
         {
             using var fs = File.OpenRead(@"TestFiles/Zip64.zip");
-            var headers = await ZipInspector.GetZipHeadersAsync(fs).ToArrayAsync();
+            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync();
             Assert.AreEqual(3, headers.Length);
             Assert.AreEqual(1, headers.OfType<LocalFileHeader>().Single().ExtraFields.OfType<Zip64ExtraField>().Count());
         }
