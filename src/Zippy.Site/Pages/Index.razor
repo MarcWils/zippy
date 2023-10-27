@@ -46,6 +46,8 @@
         if (e.File.Size > ZipInspector.MaxSupportedSize)
         {
             errorMessage = $"File is too big. Only files up to {ZipInspector.MaxSupportedSize.ToReadableFileSize()} are supported.";
+            headers = null;
+            duration = null;
         }
         else
         {

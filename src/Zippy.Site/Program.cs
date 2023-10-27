@@ -20,5 +20,4 @@ namespace Zippy.Site
             await builder.Build().RunAsync();
         }
     }
-
 }

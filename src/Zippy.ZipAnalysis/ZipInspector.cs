@@ -1,5 +1,5 @@
-﻿using System;
-using Zippy.ZipAnalysis.Extensions;
+﻿using Zippy.ZipAnalysis.Extensions;
+using Zippy.ZipAnalysis.Validations;
 using Zippy.ZipAnalysis.ZipFormat;
 
 namespace Zippy.ZipAnalysis
@@ -18,7 +18,6 @@ namespace Zippy.ZipAnalysis
         {
             _source = source ?? throw new ArgumentNullException(nameof(source));
         }
-
 
         private static readonly Dictionary<uint, Func<Stream, Task<ZipHeaderBase>>> _supportedZipHeaders = new()
         {
@@ -78,6 +77,11 @@ namespace Zippy.ZipAnalysis
             var zipHeader = new T();
             await zipHeader.LoadFromStreamAsync(stream);
             return zipHeader;
+        }
+
+        public static IEnumerable<ValidationResult> GetValdationResults(IEnumerable<ZipHeaderBase> _)
+        {
+            return Array.Empty<ValidationResult>();
         }
     }
 }
