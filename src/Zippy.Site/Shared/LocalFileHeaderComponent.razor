@@ -51,14 +51,14 @@
                         </tr>
                         <tr>
                             <td>Version needed to extract</td>
+                            <td>@LocalFileHeader.VersionNeededToExtract.ToHexString()</td>
                             <td>@LocalFileHeader.VersionNeededToExtract</td>
-                            <td></td>
                             <td>Minimum version needed to extract</td>
                         </tr>
                         <tr>
                             <td>General purpose bit flag</td>
-                            <td>@LocalFileHeader.GeneralPurposeBitFlag</td>
-                            <td></td>
+                            <td>@LocalFileHeader.GeneralPurposeBitFlag.ToHexString()</td>
+                            <td>@LocalFileHeader.GeneralPurposeBitFlag.ToBinaryString()</td>
                             <td></td>
                         </tr>
                         <tr>
@@ -81,7 +81,8 @@
                         </tr>
                         <tr>
                             <td>CRC-32 of uncompressed data</td>
-                            <td colspan="2">@LocalFileHeader.Crc32</td>
+                            <td>@LocalFileHeader.Crc32.ToHexString()</td>
+                            <td>@LocalFileHeader.Crc32</td>
                             <td></td>
                         </tr>
                         <tr>
@@ -98,14 +99,14 @@
                         </tr>
                         <tr>
                             <td>File name length</td>
+                            <td>@LocalFileHeader.FileNameLength.ToHexString()</td>
                             <td>@LocalFileHeader.FileNameLength</td>
-                            <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Extra field length</td>
+                            <td>@LocalFileHeader.ExtraFieldLength.ToHexString()</td>
                             <td>@LocalFileHeader.ExtraFieldLength</td>
-                            <td></td>
                             <td></td>
                         </tr>
                         <tr>
