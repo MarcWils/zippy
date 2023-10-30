@@ -29,6 +29,11 @@
             </div>
         </div>
         <span>File processed in @duration</span>
+
+        <div>
+            <DownloadFileComponent Headers="headers" UploadedFile="uploadedFile" />
+        </div>
+
     }
 </div>
 
@@ -39,9 +44,11 @@
     private string? errorMessage;
     private TimeSpan? duration;
     private IEnumerable<ZipAnalysis.ZipFormat.ZipHeaderBase>? headers;
+    private IBrowserFile? uploadedFile;
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
+        uploadedFile = e.File;
         fileName = e.File.Name;
 
         if (e.File.Size > ZipInspector.MaxSupportedSize)
@@ -61,4 +68,6 @@
             duration = sw.Elapsed;
         }
     }
+
+
 }

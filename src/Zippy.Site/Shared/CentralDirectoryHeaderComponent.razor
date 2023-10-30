@@ -1,4 +1,7 @@
-﻿<div class="accordion-item">
+﻿@using Zippy.Site.Shared.Input;
+
+
+<div class="accordion-item">
     <h2 class="accordion-header" id="@("header_" + _htmlId)">
         <button class="accordion-button collapsed" type="button"
                 data-bs-toggle="collapse"
@@ -51,55 +54,55 @@
                         </tr>
                         <tr>
                             <td>Version made by</td>
-                            <td>@CentralDirectoryHeader.VersionMadeBy.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.VersionMadeBy" /></td>
                             <td>@CentralDirectoryHeader.VersionMadeBy</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Version needed to extract</td>
-                            <td>@CentralDirectoryHeader.VersionNeededToExtract.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.VersionNeededToExtract" /></td>
                             <td>@CentralDirectoryHeader.VersionNeededToExtract</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>General purpose bit flag</td>
-                            <td>@CentralDirectoryHeader.GeneralPurposeBitFlag.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.GeneralPurposeBitFlag" /></td>
                             <td>@CentralDirectoryHeader.GeneralPurposeBitFlag.ToBinaryString()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Compression method</td>
-                            <td>@CentralDirectoryHeader.CompressionMethod.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.CompressionMethod" />"</td>
                             <td>@CentralDirectoryHeader.CompressionMethod</td>
                             <td>@CentralDirectoryHeader.CompressionMethod.ToCompressionMethod()</td>
                         </tr>
                         <tr>
                             <td>File last modification time</td>
-                            <td>@CentralDirectoryHeader.LastModificationFileTime.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.LastModificationFileTime" />"</td>
                             <td>@CentralDirectoryHeader.LastModificationFileTime.ToTime()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>File last modification date</td>
-                            <td>@CentralDirectoryHeader.LastModificationFileDate.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.LastModificationFileDate" />"</td>
                             <td>@CentralDirectoryHeader.LastModificationFileDate.ToDate().ToShortDateString()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>CRC-32 of uncompressed data</td>
-                            <td>@CentralDirectoryHeader.Crc32.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.Crc32" />"</td>
                             <td>@CentralDirectoryHeader.Crc32</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Compressed size</td>
-                            <td>@CentralDirectoryHeader.CompressedSize.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.CompressedSize" />"</td>
                             <td>@CentralDirectoryHeader.CompressedSize.ToReadableFileSize()</td>
                             <td>0xffffffff for ZIP64</td>
                         </tr>
                         <tr>
                             <td>Uncompressed size</td>
-                            <td>@CentralDirectoryHeader.UncompressedSize.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.UncompressedSize" />"</td>
                             <td>@CentralDirectoryHeader.UncompressedSize.ToReadableFileSize()</td>
                             <td>0xffffffff for ZIP64</td>
                         </tr>
@@ -123,25 +126,25 @@
                         </tr>
                         <tr>
                             <td>Disk number where file starts</td>
-                            <td>@CentralDirectoryHeader.DiskNumberStart.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.DiskNumberStart" /></td>
                             <td>@CentralDirectoryHeader.DiskNumberStart</td>
                             <td>0xffff for ZIP64</td>
                         </tr>
                         <tr>
                             <td>Internal file attributes</td>
-                            <td>@CentralDirectoryHeader.InternalFileAttributes.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.InternalFileAttributes" /></td>
                             <td>@CentralDirectoryHeader.InternalFileAttributes.ToBinaryString()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>External file attributes</td>
-                            <td>@CentralDirectoryHeader.ExternalFileAttributes.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.ExternalFileAttributes" /></td>
                             <td>@CentralDirectoryHeader.ExternalFileAttributes.ToBinaryString()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Relative offset of local file header</td>
-                            <td>@CentralDirectoryHeader.RelativeOffsetOfLocalHeader.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.RelativeOffsetOfLocalHeader" /></td>
                             <td>@CentralDirectoryHeader.RelativeOffsetOfLocalHeader</td>
                             <td>Relative offset of local file header (or 0xffffffff for ZIP64). This is the number of bytes between the start of the first disk on which the file occurs, and the start of the local file header. This allows software reading the central directory to locate the position of the file inside the ZIP file.</td>
                         </tr>

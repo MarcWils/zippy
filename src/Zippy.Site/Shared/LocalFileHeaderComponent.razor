@@ -1,4 +1,7 @@
-﻿<div class="accordion-item">
+﻿@using System.Globalization;
+@using Zippy.Site.Shared.Input;
+
+<div class="accordion-item">
     <h2 class="accordion-header" id="@("header_" + _htmlId)">
         <button class="accordion-button collapsed" type="button"
                 data-bs-toggle="collapse"
@@ -51,49 +54,49 @@
                         </tr>
                         <tr>
                             <td>Version needed to extract</td>
-                            <td>@LocalFileHeader.VersionNeededToExtract.ToHexString()</td>
+                            <td><HexInput @bind-Value="LocalFileHeader.VersionNeededToExtract" /></td>
                             <td>@LocalFileHeader.VersionNeededToExtract</td>
                             <td>Minimum version needed to extract</td>
                         </tr>
                         <tr>
                             <td>General purpose bit flag</td>
-                            <td>@LocalFileHeader.GeneralPurposeBitFlag.ToHexString()</td>
+                            <td><HexInput @bind-Value="LocalFileHeader.GeneralPurposeBitFlag" /></td>
                             <td>@LocalFileHeader.GeneralPurposeBitFlag.ToBinaryString()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Compression method</td>
-                            <td>@LocalFileHeader.CompressionMethod.ToHexString()</td>
+                            <td><HexInput @bind-Value="LocalFileHeader.CompressionMethod" /></td>
                             <td>@LocalFileHeader.CompressionMethod</td>
                             <td>@LocalFileHeader.CompressionMethod.ToCompressionMethod()</td>
                         </tr>
                         <tr>
                             <td>File last modification time</td>
-                            <td>@LocalFileHeader.LastModificationFileTime.ToHexString()</td>
+                            <td><HexInput @bind-Value="LocalFileHeader.LastModificationFileTime" /></td>
                             <td>@LocalFileHeader.LastModificationFileTime.ToTime()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>File last modification date</td>
-                            <td>@LocalFileHeader.LastModificationFileDate.ToHexString()</td>
+                            <td><HexInput @bind-Value="LocalFileHeader.LastModificationFileDate" /></td>
                             <td>@LocalFileHeader.LastModificationFileDate.ToDate().ToShortDateString()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>CRC-32 of uncompressed data</td>
-                            <td>@LocalFileHeader.Crc32.ToHexString()</td>
+                            <td><HexInput @bind-Value="LocalFileHeader.Crc32" />"</td>
                             <td>@LocalFileHeader.Crc32</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Compressed size</td>
-                            <td>@LocalFileHeader.CompressedSize.ToHexString()</td>
+                            <td><HexInput @bind-Value="LocalFileHeader.CompressedSize" /></td>
                             <td>@LocalFileHeader.CompressedSize.ToReadableFileSize()</td>
                             <td>0xffffffff for ZIP64</td>
                         </tr>
                         <tr>
                             <td>Uncompressed size</td>
-                            <td>@LocalFileHeader.UncompressedSize.ToHexString()</td>
+                            <td><HexInput @bind-Value="LocalFileHeader.UncompressedSize" /></td>
                             <td>@LocalFileHeader.UncompressedSize.ToReadableFileSize()</td>
                             <td>0xffffffff for ZIP64</td>
                         </tr>
@@ -137,4 +140,5 @@
 
     [Parameter]
     public LocalFileHeader? LocalFileHeader { get; set; }
+
 }

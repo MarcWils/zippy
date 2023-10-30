@@ -1,0 +1,53 @@
+﻿@typeparam T where T: struct
+
+<input type="text" @bind:get="ToHexString()" @bind:set=" (value) => { Value = FromHexString(value); }" />
+
+
+@code {
+    private T _value;
+
+
+    [Parameter]
+    public T Value {
+        get { return _value; }
+        set { 
+            if (!_value.Equals(value))
+            {
+                _value = value; 
+                ValueChanged.InvokeAsync(value);
+            }
+        }
+    }
+
+    [Parameter]
+    public EventCallback<T> ValueChanged { 
+        get; 
+        set; 
+    }
+
+    private string ToHexString()
+    {
+        return Value switch
+        {
+            ushort ushortValue => ushortValue.ToHexString(),
+            uint uintValue => uintValue.ToHexString(),
+            ulong ulongValue => ulongValue.ToHexString(),
+            _ => throw new NotSupportedException()
+        };
+    }
+
+    private T FromHexString(string value)
+    {
+        return Value switch 
+        {
+            ushort => (T)(object)Convert.ToUInt16(value, 16),
+            uint => (T)(object)Convert.ToUInt32(value, 16),
+            ulong => (T)(object)Convert.ToUInt64(value, 16),
+            _ => throw new NotSupportedException()
+        };
+    }
+
+}
+
+
+
