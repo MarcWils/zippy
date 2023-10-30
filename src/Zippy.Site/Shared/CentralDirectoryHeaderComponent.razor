@@ -51,20 +51,20 @@
                         </tr>
                         <tr>
                             <td>Version made by</td>
+                            <td>@CentralDirectoryHeader.VersionMadeBy.ToHexString()</td>
                             <td>@CentralDirectoryHeader.VersionMadeBy</td>
-                            <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Version needed to extract</td>
+                            <td>@CentralDirectoryHeader.VersionNeededToExtract.ToHexString()</td>
                             <td>@CentralDirectoryHeader.VersionNeededToExtract</td>
-                            <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>General purpose bit flag</td>
-                            <td>@CentralDirectoryHeader.GeneralPurposeBitFlag</td>
-                            <td></td>
+                            <td>@CentralDirectoryHeader.GeneralPurposeBitFlag.ToHexString()</td>
+                            <td>@CentralDirectoryHeader.GeneralPurposeBitFlag.ToBinaryString()</td>
                             <td></td>
                         </tr>
                         <tr>
@@ -87,7 +87,8 @@
                         </tr>
                         <tr>
                             <td>CRC-32 of uncompressed data</td>
-                            <td colspan="2">@CentralDirectoryHeader.Crc32</td>
+                            <td>@CentralDirectoryHeader.Crc32.ToHexString()</td>
+                            <td>@CentralDirectoryHeader.Crc32</td>
                             <td></td>
                         </tr>
                         <tr>
@@ -104,20 +105,20 @@
                         </tr>
                         <tr>
                             <td>File name length</td>
+                            <td>@CentralDirectoryHeader.FileNameLength.ToHexString()</td>
                             <td>@CentralDirectoryHeader.FileNameLength</td>
-                            <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Extra field length</td>
+                            <td>@CentralDirectoryHeader.ExtraFieldLength.ToHexString()</td>
                             <td>@CentralDirectoryHeader.ExtraFieldLength</td>
-                            <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>File comment length</td>
+                            <td>@CentralDirectoryHeader.FileCommentLength.ToHexString()</td>
                             <td>@CentralDirectoryHeader.FileCommentLength</td>
-                            <td></td>
                             <td></td>
                         </tr>
                         <tr>
@@ -128,14 +129,14 @@
                         </tr>
                         <tr>
                             <td>Internal file attributes</td>
-                            <td>@CentralDirectoryHeader.InternalFileAttributes</td>
-                            <td></td>
+                            <td>@CentralDirectoryHeader.InternalFileAttributes.ToHexString()</td>
+                            <td>@CentralDirectoryHeader.InternalFileAttributes.ToBinaryString()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>External file attributes</td>
-                            <td>@CentralDirectoryHeader.ExternalFileAttributes</td>
-                            <td></td>
+                            <td>@CentralDirectoryHeader.ExternalFileAttributes.ToHexString()</td>
+                            <td>@CentralDirectoryHeader.ExternalFileAttributes.ToBinaryString()</td>
                             <td></td>
                         </tr>
                         <tr>
