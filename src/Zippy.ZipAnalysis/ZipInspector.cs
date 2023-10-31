@@ -41,6 +41,22 @@ namespace Zippy.ZipAnalysis
         }
 
 
+        public async Task<Stream> AlterZip(IEnumerable<ZipHeaderBase> alteredHeaders)
+        {
+            var alteredStream = new MemoryStream(); // simple implementation, but takes whole file in memory
+            await _source.CopyToAsync(alteredStream);
+
+            foreach (var header in alteredHeaders)
+            {
+                alteredStream.Position = header.PositionFirstByte;
+                header.WriteToStream(alteredStream);
+            }
+            alteredStream.Position = 0;
+
+            return alteredStream;
+        }
+
+
         private static async Task<ZipHeaderBase?> GetNextZipHeaderAsync(Stream source)
         {
             uint header = 0;

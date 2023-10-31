@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using Zippy.ZipAnalysis.Extensions;
+﻿using Zippy.ZipAnalysis.Extensions;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {

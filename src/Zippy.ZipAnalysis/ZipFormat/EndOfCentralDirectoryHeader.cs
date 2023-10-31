@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using Zippy.ZipAnalysis.Extensions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using Zippy.ZipAnalysis.Extensions;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -25,7 +22,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public uint OffsetOfCentralDirectory { get; set; }
 
-        public ushort ZipFileCommentLength { get { return (ushort)((ZipFileCommentBytes != null) ? ZipFileCommentBytes.Length : 0); } }
+        public ushort ZipFileCommentLength { get; set; }
 
         public string ZipFileComment
         {
@@ -41,7 +38,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public byte[] ZipFileCommentBytes { get; set; } = Array.Empty<byte>();
 
-        public override ulong Length { get { return (MinimumLength + ZipFileCommentLength); } }
+        public override ulong Length { get { return MinimumLength + (ulong)ZipFileCommentBytes.Length; } }
 
         public long CentralDirectoryOffset { get => OffsetOfCentralDirectory; }
 
@@ -88,10 +85,10 @@ namespace Zippy.ZipAnalysis.ZipFormat
                 TotalNumberOfEntriesInCentralDirectory = await source.ReadUInt16Async();
                 SizeOfCentralDirectory = await source.ReadUInt32Async();
                 OffsetOfCentralDirectory = await source.ReadUInt32Async();
-                var zipFileCommentLength = await source.ReadUInt16Async();
+                ZipFileCommentLength = await source.ReadUInt16Async();
 
-                ZipFileCommentBytes = await source.ReadBytesAsync(zipFileCommentLength);
-                return ZipFileCommentBytes.Length == zipFileCommentLength;
+                ZipFileCommentBytes = await source.ReadBytesAsync(ZipFileCommentLength);
+                return ZipFileCommentBytes.Length == ZipFileCommentLength;
             }
             catch (EndOfStreamException)
             {

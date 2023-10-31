@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using Zippy.ZipAnalysis.Extensions;
+﻿using Zippy.ZipAnalysis.Extensions;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -10,7 +8,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public static uint MinimumLength => 30;
 
-        public override ulong Length { get { return (ulong)MinimumLength + FileNameLength + ExtraFieldLength; } }
+        public override ulong Length { get { return MinimumLength + (ulong)FileNameBytes.Length + (ulong)ExtraFields.Sum(e => e.Length); } }
 
         public override ulong OffsetLocalFileHeader => (ulong)PositionFirstByte;
 
@@ -35,13 +33,13 @@ namespace Zippy.ZipAnalysis.ZipFormat
                 Crc32 = await source.ReadUInt32Async();
                 CompressedSize = await source.ReadUInt32Async();
                 UncompressedSize = await source.ReadUInt32Async();
-                var fileNameLength = await source.ReadUInt16Async();
-                var extraFieldLength = await source.ReadUInt16Async();
+                FileNameLength = await source.ReadUInt16Async();
+                ExtraFieldLength = await source.ReadUInt16Async();
 
-                FileNameBytes = await source.ReadBytesAsync(fileNameLength);
-                ExtraFields = await ReadExtraFieldsAsync(source, extraFieldLength);
+                FileNameBytes = await source.ReadBytesAsync(FileNameLength);
+                ExtraFields = await ReadExtraFieldsAsync(source, ExtraFieldLength);
 
-                return FileNameBytes.Length == fileNameLength;
+                return FileNameBytes.Length == FileNameLength;
             }
             catch (EndOfStreamException)
             {

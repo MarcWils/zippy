@@ -85,7 +85,7 @@
                         </tr>
                         <tr>
                             <td>CRC-32 of uncompressed data</td>
-                            <td><HexInput @bind-Value="LocalFileHeader.Crc32" />"</td>
+                            <td><HexInput @bind-Value="LocalFileHeader.Crc32" /></td>
                             <td>@LocalFileHeader.Crc32</td>
                             <td></td>
                         </tr>
@@ -103,19 +103,19 @@
                         </tr>
                         <tr>
                             <td>File name length</td>
-                            <td>@LocalFileHeader.FileNameLength.ToHexString()</td>
+                            <td><HexInput @bind-Value="LocalFileHeader.FileNameLength" /></td>
                             <td>@LocalFileHeader.FileNameLength</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Extra field length</td>
-                            <td>@LocalFileHeader.ExtraFieldLength.ToHexString()</td>
+                            <td><HexInput @bind-Value="LocalFileHeader.ExtraFieldLength" /></td>
                             <td>@LocalFileHeader.ExtraFieldLength</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>File name</td>
-                            <td colspan="3">@LocalFileHeader.FileName</td>
+                            <td colspan="3"><input @bind="LocalFileHeader.FileName" class="w-100" /></td>
                         </tr>
                     </tbody>
                 </table>

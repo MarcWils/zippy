@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms;
 @using System.IO;
 @using Zippy.ZipAnalysis.IO;
+@using Zippy.ZipAnalysis;
 
 @inject IJSRuntime JS
 
@@ -40,24 +41,9 @@
     {
         if (UploadedFile != null && Headers != null)
         {
-            var zipStream = await CreateAlterZipStreamAsync(UploadedFile.OpenReadStream(), Headers);
+            var zipStream = await new ZipInspector(UploadedFile.OpenReadStream()).AlterZip(Headers);
             using var streamRef = new DotNetStreamReference(zipStream);
             await JS.InvokeVoidAsync("downloadFileFromStream", UploadedFile.Name, streamRef);
         }
-    }
-
-    private async Task<Stream> CreateAlterZipStreamAsync(Stream originalZip, IEnumerable<ZipHeaderBase> alteredHeaders)
-    {
-        var alteredStream = new MemoryStream(); // simple implementation, but takes whole file in memory
-        await originalZip.CopyToAsync(alteredStream);
-
-        foreach (var header in alteredHeaders)
-        {
-            alteredStream.Position = header.PositionFirstByte;
-            header.WriteToStream(alteredStream);
-        }
-        alteredStream.Position = 0;
-
-        return alteredStream;
     }
 }

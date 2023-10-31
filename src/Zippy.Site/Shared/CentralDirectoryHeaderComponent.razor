@@ -109,19 +109,19 @@
                         </tr>
                         <tr>
                             <td>File name length</td>
-                            <td>@CentralDirectoryHeader.FileNameLength.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.FileNameLength" /></td>
                             <td>@CentralDirectoryHeader.FileNameLength</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Extra field length</td>
-                            <td>@CentralDirectoryHeader.ExtraFieldLength.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.ExtraFieldLength" /></td>
                             <td>@CentralDirectoryHeader.ExtraFieldLength</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>File comment length</td>
-                            <td>@CentralDirectoryHeader.FileCommentLength.ToHexString()</td>
+                            <td><HexInput @bind-Value="CentralDirectoryHeader.FileCommentLength" /></td>
                             <td>@CentralDirectoryHeader.FileCommentLength</td>
                             <td></td>
                         </tr>

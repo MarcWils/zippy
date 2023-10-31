@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿using System.Text;
 using Zippy.ZipAnalysis.Extensions;
 
 namespace Zippy.ZipAnalysis.ZipFormat
@@ -12,7 +11,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
         public ushort VersionMadeBy { get; set; }
 
 
-        public ushort FileCommentLength { get { return (ushort)((FileCommentBytes != null) ? FileCommentBytes.Length : 0); } }
+        public ushort FileCommentLength { get; set; }
 
         public ushort DiskNumberStart { get; set; }
 
@@ -23,17 +22,12 @@ namespace Zippy.ZipAnalysis.ZipFormat
         public uint RelativeOffsetOfLocalHeader { get; set; }
 
 
-        public override ulong Length { get { return (ulong)46 + FileNameLength + ExtraFieldLength + FileCommentLength; } }
+        public override ulong Length { get { return (ulong)46 + (ulong)FileNameBytes.Length + (ulong)ExtraFields.Sum(e => e.Length) + (ulong)FileCommentBytes.Length; } }
 
 
         public override ulong OffsetLocalFileHeader => RelativeOffsetOfLocalHeader;
 
 
-
-        /// <summary>
-        /// Let op, bij schrijven van de filecomment wordt de huidige encoding gebruikt
-        /// Als die later wijzigt worden de bytes van de filecomment niet gewijzigd
-        /// </summary>
         public string FileComment
         {
             get { return Encoding.GetString(FileCommentBytes); }
@@ -71,18 +65,18 @@ namespace Zippy.ZipAnalysis.ZipFormat
                 Crc32 = await source.ReadUInt32Async();
                 CompressedSize = await source.ReadUInt32Async();
                 UncompressedSize = await source.ReadUInt32Async();
-                var fileNameLength = await source.ReadUInt16Async();
-                var extraFieldLength = await source.ReadUInt16Async();
-                var fileCommentLength = await source.ReadUInt16Async();
+                FileNameLength = await source.ReadUInt16Async();
+                ExtraFieldLength = await source.ReadUInt16Async();
+                FileCommentLength = await source.ReadUInt16Async();
                 DiskNumberStart = await source.ReadUInt16Async();
                 InternalFileAttributes = await source.ReadUInt16Async();
                 ExternalFileAttributes = await source.ReadUInt32Async();
                 RelativeOffsetOfLocalHeader = await source.ReadUInt32Async();
 
-                FileNameBytes = await source.ReadBytesAsync(fileNameLength);
-                ExtraFields = await ReadExtraFieldsAsync(source, extraFieldLength);
-                FileCommentBytes = await source.ReadBytesAsync(fileCommentLength);
-                return FileNameBytes.Length == fileNameLength && FileCommentBytes.Length == fileCommentLength;
+                FileNameBytes = await source.ReadBytesAsync(FileNameLength);
+                ExtraFields = await ReadExtraFieldsAsync(source, ExtraFieldLength);
+                FileCommentBytes = await source.ReadBytesAsync(FileCommentLength);
+                return FileNameBytes.Length == FileNameLength && FileCommentBytes.Length == FileCommentLength;
 
             }
             catch (EndOfStreamException)
