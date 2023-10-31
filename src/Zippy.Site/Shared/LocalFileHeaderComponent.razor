@@ -56,13 +56,13 @@
                         <tr>
                             <td>Version needed to extract</td>
                             <td><HexInput @bind-Value="LocalFileHeader.VersionNeededToExtract" /></td>
-                            <td>@LocalFileHeader.VersionNeededToExtract</td>
+                            <td><input @bind=LocalFileHeader.VersionNeededToExtract /></td>
                             <td>Minimum version needed to extract</td>
                         </tr>
                         <tr>
                             <td>General purpose bit flag</td>
                             <td><HexInput @bind-Value="LocalFileHeader.GeneralPurposeBitFlag" /></td>
-                            <td>@LocalFileHeader.GeneralPurposeBitFlag.ToBinaryString()</td>
+                            <td><BinaryInput @bind-Value="LocalFileHeader.GeneralPurposeBitFlag" /></td>
                             <td></td>
                         </tr>
                         <tr>
