@@ -1,0 +1,85 @@
+﻿@using Zippy.Site.Extensions;
+@typeparam T where T: struct
+
+<input type="text" @bind="HexValue" id="@_htmlId" aria-describedby="@(_htmlId + "Feedback")" class="@((_error == null? "" : "is-invalid"))" />
+<div id="@(_htmlId + "Feedback")" class="invalid-feedback">
+    @_error?.ErrorMessage
+</div>
+
+
+@code {
+    private T _value;
+    private string _htmlId = $"hexinput-{Guid.NewGuid()}";
+    private Error? _error;
+
+    private string HexValue
+    {
+        get
+        {
+            return (_error != null)
+                ? _error.RawInputValue
+                : Value switch
+                {
+                    ushort ushortValue => ushortValue.ToHexString(),
+                    uint uintValue => uintValue.ToHexString(),
+                    ulong ulongValue => ulongValue.ToHexString(),
+                    _ => throw new NotSupportedException()
+                };
+        }
+        set
+        {
+            try
+            {
+                _error = null;
+                Value = Value switch
+                {
+                    ushort => (T)(object)Convert.ToUInt16(value, 16),
+                    uint => (T)(object)Convert.ToUInt32(value, 16),
+                    ulong => (T)(object)Convert.ToUInt64(value, 16),
+                    _ => throw new NotSupportedException()
+                };
+            }
+            catch (Exception ex) when (ex is OverflowException || ex is FormatException)
+            {
+                _error = new Error(value, ex.Message);
+            }
+        }
+    }
+
+
+
+    [Parameter]
+    public T Value {
+        get { return _value; }
+        set { 
+            if (!_value.Equals(value))
+            {
+                _value = value; 
+                ValueChanged.InvokeAsync(value);
+            }
+        }
+    }
+
+    [Parameter]
+    public EventCallback<T> ValueChanged { 
+        get; 
+        set; 
+    }
+
+
+
+    private class Error
+    {
+        public Error(string rawInputValue, string errorMessage)
+        {
+            RawInputValue = rawInputValue ?? throw new ArgumentNullException(nameof(rawInputValue));
+            ErrorMessage = errorMessage ?? throw new ArgumentNullException(nameof(errorMessage));
+        }
+        public string RawInputValue { get; }
+        public string ErrorMessage { get; }
+    }
+
+}
+
+
+

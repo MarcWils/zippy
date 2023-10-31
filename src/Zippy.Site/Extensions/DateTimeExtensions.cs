@@ -1,4 +1,5 @@
-﻿namespace Zippy.ZipAnalysis.Extensions
+﻿
+namespace Zippy.Site.Extensions
 {
     public static class DateTimeExtensions
     {

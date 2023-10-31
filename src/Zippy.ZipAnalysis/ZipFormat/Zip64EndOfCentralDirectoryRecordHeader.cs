@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using Zippy.ZipAnalysis.Extensions;
+﻿using Zippy.ZipAnalysis.Extensions;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -96,29 +94,5 @@ namespace Zippy.ZipAnalysis.ZipFormat
             return result;
         }
 
-
-
-        [ExcludeFromCodeCoverage]
-        public override string ToString()
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine($"Header: Zip64 end of central directory record header");
-            builder.AppendLine($"Position first byte: {PositionFirstByte}");
-            builder.AppendLine($"Length: {Length}");
-            builder.AppendLine($"Signature: {Signature:x}");
-            builder.AppendLine($"SizeOfZip64EndOfCentralDirectoryRecord: {SizeOfZip64EndOfCentralDirectoryRecord:x}");
-            builder.AppendLine($"VersionMadeBy: {VersionMadeBy}");
-            builder.AppendLine($"VersionNeededToExtract: {VersionNeededToExtract}");
-            builder.AppendLine($"NumberOfThisDisk: {NumberOfThisDisk}");
-            builder.AppendLine($"NumberOfDiskWithStartOfCentralDirectory: {NumberOfDiskWithStartOfCentralDirectory}");
-            builder.AppendLine($"NumberOfEntriesInCentralDirectoryOnThisDisk: {NumberOfEntriesInCentralDirectoryOnThisDisk}");
-            builder.AppendLine($"TotalNumberOfEntriesInCentralDirectories: {TotalNumberOfEntriesInCentralDirectories}");
-            builder.AppendLine($"SizeOfCentralDirectory: {SizeOfCentralDirectory}");
-            builder.AppendLine($"OffsetOfCentralDirectory: {OffsetOfCentralDirectory}");
-            builder.AppendLine($"Zip64ExtensibleDataSector: {(Zip64ExtensibleDataSector != null ? BitConverter.ToString(Zip64ExtensibleDataSector) : "")}");
-
-            return builder.ToString();
-
-        }
     }
 }

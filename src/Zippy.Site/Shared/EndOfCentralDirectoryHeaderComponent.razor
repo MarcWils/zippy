@@ -1,4 +1,8 @@
-﻿<div class="accordion-item">
+﻿@using Zippy.Site.Extensions;
+@using Zippy.Site.Shared.Input;
+
+
+<div class="accordion-item">
     <h2 class="accordion-header" id="@("header_" + _htmlId)">
         <button class="accordion-button collapsed" type="button"
                 data-bs-toggle="collapse"
@@ -33,43 +37,43 @@
                         </tr>
                         <tr>
                             <td>Number of this disk</td>
-                            <td>@EndOfCentralDirectoryHeader.NumberOfThisDisk.ToHexString()</td>
+                            <td><HexInput @bind-Value="EndOfCentralDirectoryHeader.NumberOfThisDisk" /></td>
                             <td>@EndOfCentralDirectoryHeader.NumberOfThisDisk</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Disk where central directory starts</td>
-                            <td>@EndOfCentralDirectoryHeader.NumberOfDiskWithStartOfCentralDirectory.ToHexString()</td>
+                            <td><HexInput @bind-Value="EndOfCentralDirectoryHeader.NumberOfDiskWithStartOfCentralDirectory" /></td>
                             <td>@EndOfCentralDirectoryHeader.NumberOfDiskWithStartOfCentralDirectory</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Total number of entries in the central directory on this disk</td>
-                            <td>@EndOfCentralDirectoryHeader.NumberOfEntriesInCentralDirectoryOnThisDisk.ToHexString()</td>
+                            <td><HexInput @bind-Value="EndOfCentralDirectoryHeader.NumberOfEntriesInCentralDirectoryOnThisDisk" /></td>
                             <td>@EndOfCentralDirectoryHeader.NumberOfEntriesInCentralDirectoryOnThisDisk</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Total number of entries in central directory</td>
-                            <td>@EndOfCentralDirectoryHeader.TotalNumberOfEntriesInCentralDirectory.ToHexString()</td>
+                            <td><HexInput @bind-Value="EndOfCentralDirectoryHeader.TotalNumberOfEntriesInCentralDirectory" /></td>
                             <td>@EndOfCentralDirectoryHeader.TotalNumberOfEntriesInCentralDirectory</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Size of central directory</td>
-                            <td>@EndOfCentralDirectoryHeader.SizeOfCentralDirectory.ToHexString()</td>
+                            <td><HexInput @bind-Value="EndOfCentralDirectoryHeader.SizeOfCentralDirectory" /></td>
                             <td>@EndOfCentralDirectoryHeader.SizeOfCentralDirectory</td>
                             <td>0xffffffff for ZIP64</td>
                         </tr>
                         <tr>
                             <td>Offset of start of central directory, relative to start of archive</td>
-                            <td>@EndOfCentralDirectoryHeader.OffsetOfCentralDirectory.ToHexString()</td>
+                            <td><HexInput @bind-Value="EndOfCentralDirectoryHeader.OffsetOfCentralDirectory" /></td>
                             <td>@EndOfCentralDirectoryHeader.OffsetOfCentralDirectory</td>
                             <td>0xffffffff for ZIP64</td>
                         </tr>
                         <tr>
                             <td>Comment length</td>
-                            <td>@EndOfCentralDirectoryHeader.ZipFileCommentLength.ToHexString()</td>
+                            <td><HexInput @bind-Value="EndOfCentralDirectoryHeader.ZipFileCommentLength" />"</td>
                             <td>@EndOfCentralDirectoryHeader.ZipFileCommentLength</td>
                             <td></td>
                         </tr>

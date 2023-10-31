@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using Zippy.ZipAnalysis.Extensions;
+﻿using Zippy.ZipAnalysis.Extensions;
 
 namespace Zippy.ZipAnalysis.ZipFormat
 {
@@ -56,19 +54,5 @@ namespace Zippy.ZipAnalysis.ZipFormat
             return result;
         }
 
-
-        [ExcludeFromCodeCoverage]
-        public override string ToString()
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine($"Header: Data descriptor");
-            builder.AppendLine($"Position first byte: {PositionFirstByte}");
-            builder.AppendLine($"Signature: {Signature:x}");
-            builder.AppendLine($"Length: {Length}");
-            builder.AppendLine($"Crc32: {Crc32}");
-            builder.AppendLine($"CompressedSize: {CompressedSize}");
-            builder.AppendLine($"UncompressedSize: {UncompressedSize}");
-            return builder.ToString();
-        }
     }
 }

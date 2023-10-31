@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using System.IO;
 @using System.Diagnostics;
+@using Zippy.Site.Extensions;
 @using Zippy.ZipAnalysis;
 @using Zippy.ZipAnalysis.IO;
 @using Zippy.ZipAnalysis.Extensions;
@@ -29,6 +30,11 @@
             </div>
         </div>
         <span>File processed in @duration</span>
+
+        <div>
+            <DownloadFileComponent Headers="headers" UploadedFile="uploadedFile" />
+        </div>
+
     }
 </div>
 
@@ -39,9 +45,11 @@
     private string? errorMessage;
     private TimeSpan? duration;
     private IEnumerable<ZipAnalysis.ZipFormat.ZipHeaderBase>? headers;
+    private IBrowserFile? uploadedFile;
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
+        uploadedFile = e.File;
         fileName = e.File.Name;
 
         if (e.File.Size > ZipInspector.MaxSupportedSize)
@@ -61,4 +69,6 @@
             duration = sw.Elapsed;
         }
     }
+
+
 }
