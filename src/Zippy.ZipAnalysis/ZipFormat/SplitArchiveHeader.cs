@@ -44,16 +44,5 @@ namespace Zippy.ZipAnalysis.ZipFormat
             return result;
         }
 
-
-        [ExcludeFromCodeCoverage]
-        public override string ToString()
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine($"Header: Split archive header");
-            builder.AppendLine($"Position first byte: {PositionFirstByte}");
-            builder.AppendLine($"Signature: {Signature:x}");
-            builder.AppendLine($"Length: {Length}");
-            return builder.ToString();
-        }
     }
 }

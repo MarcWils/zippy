@@ -1,4 +1,5 @@
-﻿@typeparam T where T: struct
+﻿@using Zippy.Site.Extensions;
+@typeparam T where T: struct
 
 <input type="text" @bind:get="ToHexString()" @bind:set=" (value) => { Value = FromHexString(value); }" />
 

@@ -100,26 +100,5 @@ namespace Zippy.ZipAnalysis.ZipFormat
         }
 
 
-
-        [ExcludeFromCodeCoverage]
-        public override string ToString()
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine($"Header: End of central directory header");
-            builder.AppendLine($"Position first byte: {PositionFirstByte}");
-            builder.AppendLine($"Signature: {Signature:x}");
-            builder.AppendLine($"Length: {Length}");
-            builder.AppendLine($"MinimumLength: {MinimumLength}");
-            builder.AppendLine($"MaximumLength: {MaximumLength}");
-            builder.AppendLine($"NumberOfThisDisk: {NumberOfThisDisk}");
-            builder.AppendLine($"NumberOfDiskWithStartOfCentralDirectory: {NumberOfDiskWithStartOfCentralDirectory}");
-            builder.AppendLine($"NumberOfEntriesInCentralDirectoryOnThisDisk: {NumberOfEntriesInCentralDirectoryOnThisDisk}");
-            builder.AppendLine($"TotalNumberOfEntriesInCentralDirectory: {TotalNumberOfEntriesInCentralDirectory}");
-            builder.AppendLine($"SizeOfCentralDirectory: {SizeOfCentralDirectory}");
-            builder.AppendLine($"OffsetOfCentralDirectory: {OffsetOfCentralDirectory}");
-            builder.AppendLine($"ZipFileCommentLength: {ZipFileCommentLength}");
-            builder.AppendLine($"ZipFileComment: {ZipFileComment}");
-            return builder.ToString();
-        }
     }
 }

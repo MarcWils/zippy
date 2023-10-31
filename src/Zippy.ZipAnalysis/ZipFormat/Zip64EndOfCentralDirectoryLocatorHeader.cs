@@ -59,24 +59,5 @@ namespace Zippy.ZipAnalysis.ZipFormat
             return result;
         }
 
-
-        
-
-
-        [ExcludeFromCodeCoverage]
-        public override string ToString()
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine($"Header: Zip64 end of central directory locator header");
-            builder.AppendLine($"Position first byte: {PositionFirstByte}");
-            builder.AppendLine($"Length: {Length}");
-            builder.AppendLine($"Signature: {Signature:x}");
-            builder.AppendLine($"NumberOfDiskWithStartOfZip64EndOfCentralDirectory: {NumberOfDiskWithStartOfZip64EndOfCentralDirectory:x}");
-            builder.AppendLine($"OffsetOfZip64EndOfCentralDirectory: {OffsetOfZip64EndOfCentralDirectory}");
-            builder.AppendLine($"TotalNumberOfDisks: {TotalNumberOfDisks}");
-
-            return builder.ToString();
-
-        }
     }
 }

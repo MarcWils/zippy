@@ -79,28 +79,5 @@ namespace Zippy.ZipAnalysis.ZipFormat
             return result;
         }
 
-
-        [ExcludeFromCodeCoverage]
-        public override string ToString()
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine($"Header: Local file header");
-            builder.AppendLine($"Position first byte: {PositionFirstByte}");
-            builder.AppendLine($"Signature: {Signature:x}");
-            builder.AppendLine($"Length: {Length}");
-            builder.AppendLine($"VersionNeededToExtract: {VersionNeededToExtract}");
-            builder.AppendLine($"GeneralPurposeBitFlag: {GeneralPurposeBitFlag}");
-            builder.AppendLine($"CompressionMethod: {CompressionMethod}");
-            builder.AppendLine($"LastFileModificationTime: {LastModificationFileTime.ToTime()}");
-            builder.AppendLine($"LastFileModificationDate: {LastModificationFileDate.ToDate().ToShortDateString()}");
-            builder.AppendLine($"Crc32: {Crc32}");
-            builder.AppendLine($"CompressedSize: {CompressedSize}");
-            builder.AppendLine($"UncompressedSize: {UncompressedSize}");
-            builder.AppendLine($"FileNameLength: {FileNameLength}");
-            builder.AppendLine($"ExtraFieldLength: {ExtraFieldLength}");
-            builder.AppendLine($"FileName: {FileName}");
-            builder.AppendLine($"{string.Concat(ExtraFields?.Select(e => e.ToString()) ?? Array.Empty<string>())}");
-            return builder.ToString();
-        }
     }
 }
