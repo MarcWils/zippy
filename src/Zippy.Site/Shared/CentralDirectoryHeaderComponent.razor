@@ -55,107 +55,107 @@
                         </tr>
                         <tr>
                             <td>Version made by</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.VersionMadeBy" /></td>
-                            <td>@CentralDirectoryHeader.VersionMadeBy</td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.VersionMadeBy" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.VersionMadeBy" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Version needed to extract</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.VersionNeededToExtract" /></td>
-                            <td>@CentralDirectoryHeader.VersionNeededToExtract</td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.VersionNeededToExtract" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.VersionNeededToExtract" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>General purpose bit flag</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.GeneralPurposeBitFlag" /></td>
-                            <td><BinaryInput @bind-Value="CentralDirectoryHeader.GeneralPurposeBitFlag" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.GeneralPurposeBitFlag" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.GeneralPurposeBitFlag" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Compression method</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.CompressionMethod" /></td>
-                            <td>@CentralDirectoryHeader.CompressionMethod</td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.CompressionMethod" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.CompressionMethod" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td>@CentralDirectoryHeader.CompressionMethod.ToCompressionMethod()</td>
                         </tr>
                         <tr>
                             <td>File last modification time</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.LastModificationFileTime" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.LastModificationFileTime" /></td>
                             <td>@CentralDirectoryHeader.LastModificationFileTime.ToTime()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>File last modification date</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.LastModificationFileDate" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.LastModificationFileDate" /></td>
                             <td>@CentralDirectoryHeader.LastModificationFileDate.ToDate().ToShortDateString()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>CRC-32 of uncompressed data</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.Crc32" /></td>
-                            <td>@CentralDirectoryHeader.Crc32</td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.Crc32" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.Crc32" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Compressed size</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.CompressedSize" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.CompressedSize" /></td>
                             <td>@CentralDirectoryHeader.CompressedSize.ToReadableFileSize()</td>
                             <td>0xffffffff for ZIP64</td>
                         </tr>
                         <tr>
                             <td>Uncompressed size</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.UncompressedSize" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.UncompressedSize" /></td>
                             <td>@CentralDirectoryHeader.UncompressedSize.ToReadableFileSize()</td>
                             <td>0xffffffff for ZIP64</td>
                         </tr>
                         <tr>
                             <td>File name length</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.FileNameLength" /></td>
-                            <td>@CentralDirectoryHeader.FileNameLength</td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.FileNameLength" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.FileNameLength" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Extra field length</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.ExtraFieldLength" /></td>
-                            <td>@CentralDirectoryHeader.ExtraFieldLength</td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.ExtraFieldLength" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.ExtraFieldLength" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>File comment length</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.FileCommentLength" /></td>
-                            <td>@CentralDirectoryHeader.FileCommentLength</td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.FileCommentLength" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.FileCommentLength" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Disk number where file starts</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.DiskNumberStart" /></td>
-                            <td>@CentralDirectoryHeader.DiskNumberStart</td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.DiskNumberStart" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.DiskNumberStart" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td>0xffff for ZIP64</td>
                         </tr>
                         <tr>
                             <td>Internal file attributes</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.InternalFileAttributes" /></td>
-                            <td><BinaryInput @bind-Value="CentralDirectoryHeader.InternalFileAttributes" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.InternalFileAttributes" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.InternalFileAttributes" DisplayMode="NumericDisplayMode.Binary" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>External file attributes</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.ExternalFileAttributes" /></td>
-                            <td><BinaryInput @bind-Value="CentralDirectoryHeader.ExternalFileAttributes" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.ExternalFileAttributes" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.ExternalFileAttributes" DisplayMode="NumericDisplayMode.Binary" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Relative offset of local file header</td>
-                            <td><HexInput @bind-Value="CentralDirectoryHeader.RelativeOffsetOfLocalHeader" /></td>
-                            <td>@CentralDirectoryHeader.RelativeOffsetOfLocalHeader</td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.RelativeOffsetOfLocalHeader" /></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.RelativeOffsetOfLocalHeader" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td>Relative offset of local file header (or 0xffffffff for ZIP64). This is the number of bytes between the start of the first disk on which the file occurs, and the start of the local file header. This allows software reading the central directory to locate the position of the file inside the ZIP file.</td>
                         </tr>
                         <tr>
                             <td>File name</td>
-                            <td colspan="3">@CentralDirectoryHeader.FileName</td>
+                            <td colspan="3"><TextInput @bind-Value="CentralDirectoryHeader.FileName" /></td>
                         </tr>
                         <tr>
                             <td>File comment</td>
-                            <td colspan="3">@CentralDirectoryHeader.FileComment</td>
+                            <td colspan="3"><TextInput @bind-Value="CentralDirectoryHeader.FileComment" /></td>
                         </tr>
                     </tbody>
                 </table>

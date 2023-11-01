@@ -14,6 +14,9 @@
 </div>
 
 <div class="container">
+
+
+
     <div class="row">
         <div class="col">
             <InputFile OnChange="LoadFiles" id="fileSelector" class="@((string.IsNullOrEmpty(errorMessage)? "form-control" : "form-control is-invalid"))" aria-describedby="fileSelectorFeedback" />
@@ -22,26 +25,28 @@
             </div>
         </div>
     </div>
+
     @if (headers != null && headers.Any())
     {
+
+
+        <div class="row pt-5">
+            <div class="col">
+                <div class="float-end">
+                    <DownloadFileComponent Headers="headers" InputFile="inputFile" />
+                     <img @onclick="() => editMode = !editMode" role="button" src="/img/pencil-square.svg" alt="Edit" />
+                </div>
+            </div>
+        </div>
+
+
         <CascadingValue Value="@editMode">
-            <div class="row pt-5 justify-content-md-center">
+            <div class="row justify-content-md-center">
                 <div class="col">
                     <ZipFileComponent FileName="@fileName" Headers="headers" />
                 </div>
             </div>
-            <span>File processed in @duration</span>
-
-
-            <svg @onclick="ToggleEditMode" height="48" viewBox="0 0 48 48" width="48" xmlns="http://www.w3.org/2000/svg"><path d="M6 34.5v7.5h7.5l22.13-22.13-7.5-7.5-22.13 22.13zm35.41-20.41c.78-.78.78-2.05 0-2.83l-4.67-4.67c-.78-.78-2.05-.78-2.83 0l-3.66 3.66 7.5 7.5 3.66-3.66z" /><path d="M0 0h48v48h-48z" fill="none" /></svg>
-
-
-            @if (editMode)
-            {
-                <div>
-                    <DownloadFileComponent Headers="headers" InputFile="inputFile" />
-                </div>
-            }
+            <span><small>File processed in @duration</small></span>
         </CascadingValue>
     }
 </div>
@@ -56,10 +61,7 @@
     private IBrowserFile? inputFile;
     private bool editMode = false;
 
-    private void ToggleEditMode() => editMode = !editMode;
-
-
-    private async Task LoadFiles(InputFileChangeEventArgs e)
+     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
         inputFile = e.File;
         fileName = e.File.Name;
