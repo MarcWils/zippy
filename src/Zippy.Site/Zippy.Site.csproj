@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Zippy.ZipAnalysis\Zippy.ZipAnalysis.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
 </Project>

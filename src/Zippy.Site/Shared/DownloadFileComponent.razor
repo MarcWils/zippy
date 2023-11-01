@@ -6,7 +6,7 @@
 @inject IJSRuntime JS
 
 
-@if (Headers != null && UploadedFile != null)
+@if (Headers != null && InputFile != null)
 {
     <script>
         window.downloadFileFromStream = async (fileName, contentStreamReference) => {
@@ -23,15 +23,13 @@
     </script>
 
 
-    <button @onclick="DownloadFile">
-        Download File
-    </button>
+   <img @onclick="DownloadFile" role="button" src="img/arrow-down-circle.svg" alt="Download" />
 }
 
 
 @code {
     [Parameter]
-    public IBrowserFile? UploadedFile{ get; set; }
+    public IBrowserFile? InputFile{ get; set; }
 
     [Parameter]
     public IEnumerable<ZipHeaderBase>? Headers { get; set; }
@@ -39,11 +37,11 @@
 
     private async Task DownloadFile()
     {
-        if (UploadedFile != null && Headers != null)
+        if (InputFile != null && Headers != null)
         {
-            var zipStream = await new ZipInspector(UploadedFile.OpenReadStream()).AlterZip(Headers);
+            var zipStream = await new ZipInspector(InputFile.OpenReadStream()).AlterZip(Headers);
             using var streamRef = new DotNetStreamReference(zipStream);
-            await JS.InvokeVoidAsync("downloadFileFromStream", UploadedFile.Name, streamRef);
+            await JS.InvokeVoidAsync("downloadFileFromStream", InputFile.Name, streamRef);
         }
     }
 }
