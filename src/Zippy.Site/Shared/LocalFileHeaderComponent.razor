@@ -63,7 +63,14 @@
                             <td>General purpose bit flag</td>
                             <td><NumericInput @bind-Value="LocalFileHeader.GeneralPurposeBitFlag" /></td>
                             <td><NumericInput @bind-Value="LocalFileHeader.GeneralPurposeBitFlag" DisplayMode="NumericDisplayMode.Binary" /></td>
-                            <td></td>
+                            <td>
+                                <ul>
+                                    @foreach (var explanation in LocalFileHeader.GeneralPurposeBitFlag.GetGeneralPurposeBitFlagExplanations())
+                                    {
+                                        <li>@explanation</li>
+                                    }
+                                </ul>
+                            </td>
                         </tr>
                         <tr>
                             <td>Compression method</td>

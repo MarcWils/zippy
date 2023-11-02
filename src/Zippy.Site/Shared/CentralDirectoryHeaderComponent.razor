@@ -57,7 +57,7 @@
                             <td>Version made by</td>
                             <td><NumericInput @bind-Value="CentralDirectoryHeader.VersionMadeBy" /></td>
                             <td><NumericInput @bind-Value="CentralDirectoryHeader.VersionMadeBy" DisplayMode="NumericDisplayMode.Decimal" /></td>
-                            <td></td>
+                            <td>@CentralDirectoryHeader.VersionMadeBy.ToVersionMadeBy()</td>
                         </tr>
                         <tr>
                             <td>Version needed to extract</td>
@@ -68,8 +68,13 @@
                         <tr>
                             <td>General purpose bit flag</td>
                             <td><NumericInput @bind-Value="CentralDirectoryHeader.GeneralPurposeBitFlag" /></td>
-                            <td><NumericInput @bind-Value="CentralDirectoryHeader.GeneralPurposeBitFlag" DisplayMode="NumericDisplayMode.Decimal" /></td>
-                            <td></td>
+                            <td><NumericInput @bind-Value="CentralDirectoryHeader.GeneralPurposeBitFlag" DisplayMode="NumericDisplayMode.Binary" /></td>
+                            <td><ul>@foreach (var explanation in CentralDirectoryHeader.GeneralPurposeBitFlag.GetGeneralPurposeBitFlagExplanations())
+                                    {
+                                        <li>@explanation</li>
+                                    }
+                                </ul>
+                            </td>
                         </tr>
                         <tr>
                             <td>Compression method</td>
