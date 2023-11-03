@@ -69,7 +69,7 @@
                             <td>General purpose bit flag</td>
                             <td><NumericInput @bind-Value="CentralDirectoryHeader.GeneralPurposeBitFlag" /></td>
                             <td><NumericInput @bind-Value="CentralDirectoryHeader.GeneralPurposeBitFlag" DisplayMode="NumericDisplayMode.Binary" /></td>
-                            <td><ul>@foreach (var explanation in CentralDirectoryHeader.GeneralPurposeBitFlag.GetGeneralPurposeBitFlagExplanations())
+                            <td><ul>@foreach (var explanation in CentralDirectoryHeader.GeneralPurposeBitFlag.GetGeneralPurposeBitFlagExplanations(CentralDirectoryHeader.CompressionMethod))
                                     {
                                         <li>@explanation</li>
                                     }
