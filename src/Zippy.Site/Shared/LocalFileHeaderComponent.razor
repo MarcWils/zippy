@@ -65,7 +65,7 @@
                             <td><NumericInput @bind-Value="LocalFileHeader.GeneralPurposeBitFlag" DisplayMode="NumericDisplayMode.Binary" /></td>
                             <td>
                                 <ul>
-                                    @foreach (var explanation in LocalFileHeader.GeneralPurposeBitFlag.GetGeneralPurposeBitFlagExplanations())
+                                    @foreach (var explanation in LocalFileHeader.GeneralPurposeBitFlag.GetGeneralPurposeBitFlagExplanations(LocalFileHeader.CompressionMethod))
                                     {
                                         <li>@explanation</li>
                                     }
