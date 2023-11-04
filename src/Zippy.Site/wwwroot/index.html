@@ -25,16 +25,24 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="./">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="./privacy">Privacy</a>
-                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
 
-    <div id="app">Loading...</div>
+    <div class="text-center pb-5">
+        <h1 class="display-4">Welcome to Zippy</h1>
+        <span>Note: Zippy works completely in the browser. No data leaves the browser.</span>
+    </div>
+
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
@@ -44,7 +52,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - Zippy, an online ZIP-archive visualizer - <a href="./privacy">Privacy</a>
+            &copy; 2023 - Zippy, an online ZIP-archive visualizer - <a href="https://github.com/MarcWils/zippy/">https://github.com/MarcWils/zippy/</a>
         </div>
     </footer>
 

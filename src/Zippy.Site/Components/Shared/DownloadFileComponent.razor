@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNetCore.Components.Forms;
+@using System.IO;
+@using Zippy.ZipAnalysis.IO;
+@using Zippy.ZipAnalysis;
+
+@inject IJSRuntime JS
+
+
+@if (Headers != null && InputFile != null)
+{
+    <script>
+        window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+            const arrayBuffer = await contentStreamReference.arrayBuffer();
+            const blob = new Blob([arrayBuffer]);
+            const url = URL.createObjectURL(blob);
+            const anchorElement = document.createElement('a');
+            anchorElement.href = url;
+            anchorElement.download = fileName ?? '';
+            anchorElement.click();
+            anchorElement.remove();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+
+
+   <img @onclick="DownloadFile" role="button" src="img/arrow-down-circle.svg" alt="Download" title="Download file" />
+}
+
+
+@code {
+    [Parameter]
+    public IBrowserFile? InputFile{ get; set; }
+
+    [Parameter]
+    public IEnumerable<ZipHeaderBase>? Headers { get; set; }
+
+
+    private async Task DownloadFile()
+    {
+        if (InputFile != null && Headers != null)
+        {
+            var zipStream = await new ZipInspector(InputFile.OpenReadStream()).AlterZip(Headers);
+            using var streamRef = new DotNetStreamReference(zipStream);
+            await JS.InvokeVoidAsync("downloadFileFromStream", InputFile.Name, streamRef);
+        }
+    }
+}

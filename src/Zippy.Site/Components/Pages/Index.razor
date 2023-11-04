@@ -1,33 +1,45 @@
 ﻿@page "/"
 @using System.IO;
 @using System.Diagnostics;
+@using Zippy.Site.Extensions;
 @using Zippy.ZipAnalysis;
 @using Zippy.ZipAnalysis.IO;
 @using Zippy.ZipAnalysis.Extensions;
 @using Zippy.ZipAnalysis.ZipFormat;
 @using Microsoft.AspNetCore.Components.Forms;
 
-<div class="text-center pb-5">
-    <h1 class="display-4">Welcome to Zippy</h1>
-</div>
 
 <div class="container">
+
     <div class="row">
         <div class="col">
-            <InputFile OnChange="@LoadFiles" id="fileSelector" class="@((string.IsNullOrEmpty(errorMessage)? "form-control" : "form-control is-invalid"))" aria-describedby="fileSelectorFeedback" />
+            <InputFile OnChange="LoadFiles" id="fileSelector" class="@((string.IsNullOrEmpty(errorMessage)? "form-control" : "form-control is-invalid"))" aria-describedby="fileSelectorFeedback" />
             <div id="fileSelectorFeedback" class="invalid-feedback">
                 @errorMessage
             </div>
         </div>
     </div>
+
     @if (headers != null && headers.Any())
     {
-        <div class="row pt-5 justify-content-md-center">
+        <div class="row pt-5">
             <div class="col">
-                <ZipFileComponent FileName="@fileName" Headers="headers" />
+                <div class="float-end">
+                    <DownloadFileComponent Headers="headers" InputFile="inputFile" />
+                    <img @onclick="() => editMode = !editMode" role="button" src="img/pencil-square.svg" alt="Edit" title="Go to edit mode" />
+                </div>
             </div>
         </div>
-        <span>File processed in @duration</span>
+
+
+        <CascadingValue Value="@editMode">
+            <div class="row justify-content-md-center">
+                <div class="col">
+                    <ZipFileComponent FileName="@fileName" Headers="headers" />
+                </div>
+            </div>
+            <span><small>File processed in @duration</small></span>
+        </CascadingValue>
     }
 </div>
 
@@ -38,9 +50,17 @@
     private string? errorMessage;
     private TimeSpan? duration;
     private IEnumerable<ZipAnalysis.ZipFormat.ZipHeaderBase>? headers;
+    private IBrowserFile? inputFile;
+    private bool editMode = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(10000);
+    }
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
+        inputFile = e.File;
         fileName = e.File.Name;
 
         if (e.File.Size > ZipInspector.MaxSupportedSize)

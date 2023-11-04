@@ -23,9 +23,9 @@ namespace Zippy.ZipAnalysis.ZipFormat
 
         public uint UncompressedSize { get; set; }
 
-        public ushort FileNameLength { get { return (ushort)((FileNameBytes != null) ? FileNameBytes.Length : 0); } }
+        public ushort FileNameLength { get; set; }
 
-        public ushort ExtraFieldLength { get { return (ushort)((ExtraFields != null) ? ExtraFields.Sum(e => e.Length) : 0); } }
+        public ushort ExtraFieldLength { get; set; }
 
 
         /// <summary>
@@ -66,6 +66,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
             }
         }
 
+        // this implemenation is not complete.
         public bool IsDirectory
         {
             get

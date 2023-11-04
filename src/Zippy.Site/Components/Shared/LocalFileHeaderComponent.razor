@@ -1,4 +1,6 @@
-﻿<div class="accordion-item">
+﻿@using System.Globalization;
+
+<div class="accordion-item">
     <h2 class="accordion-header" id="@("header_" + _htmlId)">
         <button class="accordion-button collapsed" type="button"
                 data-bs-toggle="collapse"
@@ -51,66 +53,74 @@
                         </tr>
                         <tr>
                             <td>Version needed to extract</td>
-                            <td>@LocalFileHeader.VersionNeededToExtract</td>
-                            <td></td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.VersionNeededToExtract" /></td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.VersionNeededToExtract" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td>Minimum version needed to extract</td>
                         </tr>
                         <tr>
                             <td>General purpose bit flag</td>
-                            <td>@LocalFileHeader.GeneralPurposeBitFlag</td>
-                            <td></td>
-                            <td></td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.GeneralPurposeBitFlag" /></td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.GeneralPurposeBitFlag" DisplayMode="NumericDisplayMode.Binary" /></td>
+                            <td>
+                                <ul>
+                                    @foreach (var explanation in LocalFileHeader.GeneralPurposeBitFlag.GetGeneralPurposeBitFlagExplanations(LocalFileHeader.CompressionMethod))
+                                    {
+                                        <li>@explanation</li>
+                                    }
+                                </ul>
+                            </td>
                         </tr>
                         <tr>
                             <td>Compression method</td>
-                            <td>@LocalFileHeader.CompressionMethod.ToHexString()</td>
-                            <td>@LocalFileHeader.CompressionMethod</td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.CompressionMethod" /></td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.CompressionMethod" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td>@LocalFileHeader.CompressionMethod.ToCompressionMethod()</td>
                         </tr>
                         <tr>
                             <td>File last modification time</td>
-                            <td>@LocalFileHeader.LastModificationFileTime.ToHexString()</td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.LastModificationFileTime" /></td>
                             <td>@LocalFileHeader.LastModificationFileTime.ToTime()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>File last modification date</td>
-                            <td>@LocalFileHeader.LastModificationFileDate.ToHexString()</td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.LastModificationFileDate" /></td>
                             <td>@LocalFileHeader.LastModificationFileDate.ToDate().ToShortDateString()</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>CRC-32 of uncompressed data</td>
-                            <td colspan="2">@LocalFileHeader.Crc32</td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.Crc32" /></td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.Crc32" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Compressed size</td>
-                            <td>@LocalFileHeader.CompressedSize.ToHexString()</td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.CompressedSize" /></td>
                             <td>@LocalFileHeader.CompressedSize.ToReadableFileSize()</td>
                             <td>0xffffffff for ZIP64</td>
                         </tr>
                         <tr>
                             <td>Uncompressed size</td>
-                            <td>@LocalFileHeader.UncompressedSize.ToHexString()</td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.UncompressedSize" /></td>
                             <td>@LocalFileHeader.UncompressedSize.ToReadableFileSize()</td>
                             <td>0xffffffff for ZIP64</td>
                         </tr>
                         <tr>
                             <td>File name length</td>
-                            <td>@LocalFileHeader.FileNameLength</td>
-                            <td></td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.FileNameLength" /></td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.FileNameLength" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Extra field length</td>
-                            <td>@LocalFileHeader.ExtraFieldLength</td>
-                            <td></td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.ExtraFieldLength" /></td>
+                            <td><NumericInput @bind-Value="LocalFileHeader.ExtraFieldLength" DisplayMode="NumericDisplayMode.Decimal" /></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>File name</td>
-                            <td colspan="3">@LocalFileHeader.FileName</td>
+                            <td colspan="3"><TextInput @bind-Value="LocalFileHeader.FileName" /></td>
                         </tr>
                     </tbody>
                 </table>
@@ -136,4 +146,5 @@
 
     [Parameter]
     public LocalFileHeader? LocalFileHeader { get; set; }
+
 }
