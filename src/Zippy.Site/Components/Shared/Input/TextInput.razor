@@ -7,7 +7,6 @@ else
     <span>@Value</span>
 }
 
-
 @code {
     private string _htmlId = $"input-{Guid.NewGuid()}";
 
@@ -15,7 +14,7 @@ else
     protected bool EditMode { get; set; }
 
     [Parameter]
-    public string Value { get; set; }
+    public string? Value { get; set; }
 
     [Parameter]
     public EventCallback<string> ValueChanged { get; set; }

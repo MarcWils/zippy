@@ -1,12 +1,9 @@
-﻿using System.Text;
-
-namespace Zippy.Site.Extensions
+﻿namespace Zippy.Site.Extensions
 {
     public static class GeneralPurposeBitFlagExtensions
     {
         public static IEnumerable<string> GetGeneralPurposeBitFlagExplanations(this ushort generalPurposeBitFlag, ushort compressionMethod)
         {
-
             if ((generalPurposeBitFlag & (1)) > 0)
             {
                 yield return "Bit 0: File is encrypted";
@@ -23,10 +20,11 @@ namespace Zippy.Site.Extensions
             {
                 yield return (generalPurposeBitFlag & 0x0006) switch
                 {
-                    0 => $"Bit 1 & 2: Normal (-en) compression option was used",
-                    2 => $"Bit 1 & 2: Maximum (-exx/-ex) compression option was used",
-                    4 => $"Bit 1 & 2: Fast (-ef) compression option was used",
-                    6 => $"Bit 1 & 2: Super Fast (-es) compression option was used",
+                    0 => "Bit 1 & 2: Normal (-en) compression option was used",
+                    2 => "Bit 1 & 2: Maximum (-exx/-ex) compression option was used",
+                    4 => "Bit 1 & 2: Fast (-ef) compression option was used",
+                    6 => "Bit 1 & 2: Super Fast (-es) compression option was used",
+                    _ => "Unknown"
                 };
             }
 
@@ -36,6 +34,7 @@ namespace Zippy.Site.Extensions
                 {
                     0 => $"Bit 1: indicates an end-of-stream (EOS) marker is used to mark the end of the compressed data stream",
                     2 => $"Bit 1:EOS marker is not present and the compressed data size must be known to extract",
+                    _ => "Unknown"
                 };
             }
 

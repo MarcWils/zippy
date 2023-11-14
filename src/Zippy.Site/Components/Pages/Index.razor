@@ -8,14 +8,8 @@
 @using Zippy.ZipAnalysis.ZipFormat;
 @using Microsoft.AspNetCore.Components.Forms;
 
-<div class="text-center pb-5">
-    <h1 class="display-4">Welcome to Zippy</h1>
-    <span>Note: Zippy works completely in the browser. No data leaves the browser.</span>
-</div>
 
 <div class="container">
-
-
 
     <div class="row">
         <div class="col">
@@ -32,7 +26,7 @@
             <div class="col">
                 <div class="float-end">
                     <DownloadFileComponent Headers="headers" InputFile="inputFile" />
-                     <img @onclick="() => editMode = !editMode" role="button" src="img/pencil-square.svg" alt="Edit" />
+                    <img @onclick="() => editMode = !editMode" role="button" src="img/pencil-square.svg" alt="Edit" title="Go to edit mode" />
                 </div>
             </div>
         </div>
@@ -59,7 +53,12 @@
     private IBrowserFile? inputFile;
     private bool editMode = false;
 
-     private async Task LoadFiles(InputFileChangeEventArgs e)
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(10000);
+    }
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
     {
         inputFile = e.File;
         fileName = e.File.Name;

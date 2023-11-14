@@ -1,4 +1,4 @@
-﻿namespace Zippy.Site.Shared.Input
+﻿namespace Zippy.Site.Components.Shared.Input
 {
     public enum NumericDisplayMode
     {

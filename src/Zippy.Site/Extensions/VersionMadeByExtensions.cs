@@ -2,7 +2,6 @@
 {
     public static class VersionMadeByExtensions
     {
-
         public static string ToVersionMadeBy(this ushort versionMadeBy)
         {
             return versionMadeBy switch
