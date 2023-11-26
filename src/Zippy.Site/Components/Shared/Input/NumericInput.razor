@@ -1,5 +1,5 @@
 ﻿@using Zippy.Site.Extensions;
-@typeparam T where T: struct
+@typeparam T where T: struct, IEquatable<T>
 
 @if (EditMode)
 {
@@ -15,37 +15,34 @@ else
 
 
 @code {
-    private T _value;
     private string _htmlId = $"input-{Guid.NewGuid()}";
     private Error? _error;
 
-    [CascadingParameter]
-    protected bool EditMode { get; set; }
 
-
-    [Parameter]
-    public NumericDisplayMode DisplayMode { get; set; } = NumericDisplayMode.Hexadecimal;
-
-    [Parameter]
-    public T Value
+    T InternalValue
     {
-        get { return _value; }
+        get => Value;
         set
         {
-            if (!_value.Equals(value))
+            if (!value.Equals(Value))
             {
-                _value = value;
                 ValueChanged.InvokeAsync(value);
             }
         }
     }
 
+
+    [CascadingParameter]
+    protected bool EditMode { get; set; }
+
     [Parameter]
-    public EventCallback<T> ValueChanged
-    {
-        get;
-        set;
-    }
+    public NumericDisplayMode DisplayMode { get; set; } = NumericDisplayMode.Hexadecimal;
+
+    [Parameter]
+    public T Value { get; set; }
+
+    [Parameter]
+    public EventCallback<T> ValueChanged { get; set; }
 
 
     private string NumericValue
@@ -54,7 +51,7 @@ else
         {
             return (_error != null)
                 ? _error.RawInputValue
-                : Value switch
+                : InternalValue switch
                 {
                     ushort ushortValue => DisplayMode switch {
                         NumericDisplayMode.Binary => ushortValue.ToBinaryString(),
@@ -90,7 +87,7 @@ else
                 }
 
                 _error = null;
-                Value = Value switch
+                InternalValue = InternalValue switch
                 {
                     ushort => (T)(object)Convert.ToUInt16(newValue, (int)DisplayMode),
                     uint => (T)(object)Convert.ToUInt32(newValue, (int)DisplayMode),

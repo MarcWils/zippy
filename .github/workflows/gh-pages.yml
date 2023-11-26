@@ -41,7 +41,7 @@ jobs:
         run: dotnet restore src/Zippy.sln
       - name: Build
         run: dotnet build src/Zippy.sln --no-restore
-      - name: Build
+      - name: Test
         run: dotnet test src/Zippy.ZipAnalysis.Tests/Zippy.ZipAnalysis.Tests.csproj
       - name: Publish
         if: github.ref == 'refs/heads/main'
