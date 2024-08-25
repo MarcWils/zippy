@@ -36,7 +36,7 @@ h1:focus {
     display: block;
     width: 8rem;
     height: 8rem;
-    margin: 20vh auto 1rem auto;
+    margin: 10vh auto 1rem auto;
 }
 
     .loading-progress circle {
@@ -54,16 +54,15 @@ h1:focus {
         }
 
 .loading-progress-text {
-    position: absolute;
+    position: relative;
     text-align: center;
     font-weight: bold;
-    inset: calc(48vh + 3.25rem) 0 auto 0.2rem;
+    top: -90px;
 }
 
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
-
 
 
 html {
