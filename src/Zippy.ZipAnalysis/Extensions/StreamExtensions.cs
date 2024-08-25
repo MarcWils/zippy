@@ -7,10 +7,9 @@ namespace Zippy.ZipAnalysis.Extensions
         public static async Task<byte> ReadByteAsync(this Stream source)
         {
             var buffer = new byte[1];
-            var nrOfBytesRead = await source.ReadAsync(buffer, 0, 1);
+            var nrOfBytesRead = await source.ReadAsync(buffer.AsMemory(0, 1));
             return nrOfBytesRead == 0 ? throw new EndOfStreamException() : buffer[0];
         }
-
 
 
         public static async Task<ushort> ReadUInt16Async(this Stream source) => 
@@ -23,14 +22,11 @@ namespace Zippy.ZipAnalysis.Extensions
 
         public static async Task<byte[]> ReadBytesAsync(this Stream source, int count)
         {
-            if (count < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(count);
 
             if (count == 0)
             {
-                return Array.Empty<byte>();
+                return [];
             }
 
             byte[] result = new byte[count];
