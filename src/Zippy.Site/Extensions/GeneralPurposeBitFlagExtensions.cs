@@ -33,7 +33,7 @@
                 yield return (generalPurposeBitFlag & 0x0002) switch
                 {
                     0 => $"Bit 1: indicates an end-of-stream (EOS) marker is used to mark the end of the compressed data stream",
-                    2 => $"Bit 1:EOS marker is not present and the compressed data size must be known to extract",
+                    2 => $"Bit 1: EOS marker is not present and the compressed data size must be known to extract",
                     _ => "Unknown"
                 };
             }

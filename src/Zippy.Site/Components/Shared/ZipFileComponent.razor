@@ -27,6 +27,9 @@
                 case LocalFileHeader lf:
                     <LocalFileHeaderComponent LocalFileHeader="lf" />
                     break;
+                case DataDescriptor dd:
+                    <DataDescriptorComponent DataDescriptor="dd" />
+                    break;
                 case CentralDirectoryHeader cd:
                     <CentralDirectoryHeaderComponent CentralDirectoryHeader="cd" />
                     break;
@@ -54,6 +57,6 @@
 
     private IEnumerable<ValidationResult> GetValidationResults()
     {
-        return ZipInspector.GetValdationResults(Headers!);
+        return ZipInspector.GetValidationResults(Headers!);
     }
 }

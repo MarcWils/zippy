@@ -4,7 +4,7 @@ namespace Zippy.ZipAnalysis.ZipFormat
 {
     public class DataDescriptor : ZipHeaderBase
     {
-        public const uint Signature = DataDescriptorOrSplitArchiveHeader.Signature; // Header is not manadatory for data descriptor. For now we only have support for data descriptors that include a header..
+        public const uint Signature = DataDescriptorOrSplitArchiveHeader.Signature; // Header is not mandatory for data descriptor. For now we only have support for data descriptors that include a header..
 
         public override ulong Length => 16;
 
