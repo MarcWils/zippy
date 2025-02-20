@@ -1,0 +1,90 @@
+﻿@using System.Globalization;
+@using Zippy.Site.Extensions;
+
+<div class="accordion-item">
+    <h2 class="accordion-header" id="@("header_" + _htmlId)">
+        <button class="accordion-button collapsed" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="@("#" + _htmlId)"
+                aria-expanded="false"
+                aria-controls="@_htmlId">
+            @if (DataDescriptor != null)
+            {
+                @:Data descriptor
+            }
+        </button>
+    </h2>
+    <div id="@_htmlId" class="accordion-collapse collapse" aria-labelledby="@("header_" + _htmlId)">
+        <div class="accordion-body">
+            @if (DataDescriptor != null)
+            {
+                <table class="table table-condensed table-striped table-hover table-bordered">
+                    <thead>
+                        <tr class="table-light">
+                            <th>Property</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Position first byte</td>
+                            <td>@DataDescriptor.PositionFirstByte</td>
+                        </tr>
+                        <tr>
+                            <td>Length</td>
+                            <td>@DataDescriptor.Length</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table table-condensed table-striped table-hover table-bordered">
+                    <thead>
+                        <tr class="table-light">
+                            <th>Field</th>
+                            <th>Raw value</th>
+                            <th>Display value</th>
+                            <th>Explanation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Signature</td>
+                            <td>@DataDescriptor.Signature.ToHexString()</td>
+                            <td></td>
+                            <td>
+                                Although not originally assigned a signature, the value
+                                0x08074b50 has commonly been adopted as a signature value
+                                for the data descriptor record
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>CRC-32 of uncompressed data</td>
+                            <td><NumericInput @bind-Value="DataDescriptor.Crc32" /></td>
+                            <td><NumericInput @bind-Value="DataDescriptor.Crc32" DisplayMode="NumericDisplayMode.Decimal" /></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Compressed size</td>
+                            <td><NumericInput @bind-Value="DataDescriptor.CompressedSize" /></td>
+                            <td>@DataDescriptor.CompressedSize.ToReadableFileSize()</td>
+                            <td>0xffffffff for ZIP64</td>
+                        </tr>
+                        <tr>
+                            <td>Uncompressed size</td>
+                            <td><NumericInput @bind-Value="DataDescriptor.UncompressedSize" /></td>
+                            <td>@DataDescriptor.UncompressedSize.ToReadableFileSize()</td>
+                            <td>0xffffffff for ZIP64</td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private string _htmlId = $"dd-{Guid.NewGuid()}";
+
+    [Parameter]
+    public DataDescriptor? DataDescriptor { get; set; }
+
+}

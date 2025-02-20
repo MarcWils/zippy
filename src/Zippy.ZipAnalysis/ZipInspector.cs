@@ -96,7 +96,7 @@ namespace Zippy.ZipAnalysis
             return zipHeader;
         }
 
-        public static IEnumerable<ValidationResult> GetValdationResults(IEnumerable<ZipHeaderBase> _)
+        public static IEnumerable<ValidationResult> GetValidationResults(IEnumerable<ZipHeaderBase> _)
         {
             return Array.Empty<ValidationResult>();
         }
