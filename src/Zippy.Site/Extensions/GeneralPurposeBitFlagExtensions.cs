@@ -40,7 +40,7 @@
 
             if ((generalPurposeBitFlag & (1 << 3)) > 0)
             {
-                yield return "Bit 3: crc-32, compressed and uncompressed size are set to zero in local file header. he correct values are put in the data descriptor immediately following the compressed data";
+                yield return "Bit 3: crc-32, compressed and uncompressed size are set to zero in local file header. The correct values are put in the data descriptor immediately following the compressed data.";
             }
 
             if ((generalPurposeBitFlag & (1 << 5)) > 0)
