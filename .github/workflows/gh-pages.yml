@@ -34,7 +34,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v4.3.0
+        uses: actions/setup-dotnet@v4.3.1
         with:
           dotnet-version: 9.x
       - name: Restore dependencies
