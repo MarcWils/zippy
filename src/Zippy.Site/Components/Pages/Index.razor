@@ -13,7 +13,7 @@
 
     <div class="row">
         <div class="col">
-            <InputFile OnChange="LoadFiles" id="fileSelector" class="@((string.IsNullOrEmpty(errorMessage)? "form-control" : "form-control is-invalid"))" aria-describedby="fileSelectorFeedback" />
+            <InputFile OnChange="LoadFiles" id="fileSelector" class="@((string.IsNullOrEmpty(errorMessage)? "form-control" : "form-control is-invalid"))" aria-describedby="fileSelectorFeedback" accept=".zip" />
             <div id="fileSelectorFeedback" class="invalid-feedback">
                 @errorMessage
             </div>
