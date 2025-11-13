@@ -12,20 +12,19 @@ namespace Zippy.ZipAnalysis.Tests
         public async Task Given_A_Valid_ZipArchive_GetZipHeadersAsync_Should_Return_Headers()
         {
             using var fs = File.OpenRead(@"TestFiles/ValidZip.zip");
-            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync();
-            Assert.AreEqual(3, headers.Length);
+            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync(TestContext.CancellationToken);
+            Assert.HasCount(3, headers);
             Assert.IsTrue(headers[0] is LocalFileHeader);
             Assert.IsTrue(headers[1] is CentralDirectoryHeader);
             Assert.IsTrue(headers[2] is EndOfCentralDirectoryHeader);
         }
 
-
         [TestMethod]
         public async Task Given_A_Empty_ZipArchive_GetZipHeadersAsync_Should_Return_Header()
         {
             using var fs = File.OpenRead(@"TestFiles/EmptyZip.zip");
-            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync();
-            Assert.AreEqual(1, headers.Length);
+            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync(TestContext.CancellationToken);
+            Assert.HasCount(1, headers);
             Assert.IsTrue(headers[0] is EndOfCentralDirectoryHeader);
         }
 
@@ -34,8 +33,8 @@ namespace Zippy.ZipAnalysis.Tests
         public async Task Given_A_ZipArchive_With_Zip64_Entry_GetZipHeadersAsync_Should_Return_Header()
         {
             using var fs = File.OpenRead(@"TestFiles/Zip64.zip");
-            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync();
-            Assert.AreEqual(3, headers.Length);
+            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync(TestContext.CancellationToken);
+            Assert.HasCount(3, headers);
             Assert.AreEqual(1, headers.OfType<LocalFileHeader>().Single().ExtraFields.OfType<Zip64ExtraField>().Count());
         }
 
@@ -43,8 +42,8 @@ namespace Zippy.ZipAnalysis.Tests
         public async Task Given_A_Streamed_ZipArchive_GetZipHeadersAsync_Should_Return_DataDescriptor()
         {
             using var fs = File.OpenRead(@"TestFiles/DataDescriptor.zip");
-            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync();
-            Assert.AreEqual(4, headers.Length);
+            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync(TestContext.CancellationToken);
+            Assert.HasCount(4, headers);
             Assert.IsTrue(headers[1] is DataDescriptor);
         }
 
@@ -53,8 +52,8 @@ namespace Zippy.ZipAnalysis.Tests
         public async Task Given_A_Split_By_PKWare_ZipArchive_GetZipHeadersAsync_Should_Return_SplitArchiveHeader()
         {
             using var fs = File.OpenRead(@"TestFiles/SplitArchive.z01");
-            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync();
-            Assert.AreEqual(2, headers.Length);
+            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync(TestContext.CancellationToken);
+            Assert.HasCount(2, headers);
             Assert.IsTrue(headers[0] is SplitArchiveHeader);
             Assert.IsTrue(headers[1] is LocalFileHeader);
         }
@@ -63,8 +62,8 @@ namespace Zippy.ZipAnalysis.Tests
         public async Task Given_A_Random_String_GetZipHeadersAsync_Should_Return_No_Headers()
         {
             using var fs = new MemoryStream(Encoding.UTF8.GetBytes("Zippy"));
-            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync();
-            Assert.AreEqual(0, headers.Length);
+            var headers = await new ZipInspector(fs).GetZipHeadersAsync().ToArrayAsync(TestContext.CancellationToken);
+            Assert.IsEmpty(headers);
         }
 
 
@@ -78,9 +77,9 @@ namespace Zippy.ZipAnalysis.Tests
             await Read_Write_And_Assert(File.OpenRead(@"TestFiles/DataDescriptor.zip"));
         }
 
-        private static async Task Read_Write_And_Assert(Stream source)
+        private async Task Read_Write_And_Assert(Stream source)
         {
-            var headers = await new ZipInspector(source).GetZipHeadersAsync().ToArrayAsync();
+            var headers = await new ZipInspector(source).GetZipHeadersAsync().ToArrayAsync(TestContext.CancellationToken);
             source.Position = 0;
             using var target = await new ZipInspector(source).AlterZip(headers);
             source.Position = 0;
@@ -91,5 +90,7 @@ namespace Zippy.ZipAnalysis.Tests
 
             await source.DisposeAsync();
         }
+
+        public TestContext TestContext { get; set; }
     }
 }
