@@ -5,8 +5,8 @@
     <NoWarn>$(NoWarn);NU1507</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.13" />
-    <PackageVersion Include="MSTest" Version="4.5.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="11.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Gateway" Version="11.0.0" />
+    <PackageVersion Include="MSTest" Version="4.5.3" />
   </ItemGroup>
 </Project>
