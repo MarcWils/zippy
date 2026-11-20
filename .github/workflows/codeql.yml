@@ -30,7 +30,7 @@ jobs:
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v6.1.0
       with:
-        dotnet-version: 10.x
+        dotnet-version: 11.x
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v4.39.3
